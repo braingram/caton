@@ -367,12 +367,18 @@ def extract_spikes(DatFileName,n_ch_dat,ChannelsToUse,ChannelGraph,max_spikes=No
         spike_count = 0
         
         for s_start,s_end,keep_start,keep_end in chunk_bounds(n_samples,CHUNK_SIZE,CHUNK_OVERLAP):
+            logging.debug("Processing first chunk")
             # DatChunk = np.fromfile(fd,dtype=DTYPE,count=(s_end-s_start)*n_ch_dat).reshape(s_end-s_start,n_ch_dat)[:,ChannelsToUse]
+            logging.debug("Reading chunk")
             DatChunk = read_data(DatFileName, s_start, s_end)[:,ChannelsToUse]
             # fd.seek(fd.tell()-CHUNK_OVERLAP*n_ch_dat*np.nbytes[DTYPE])
-            FilteredChunk = filtfilt2d(b,a,DatChunk.astype(np.float32))    
+            logging.debug("Filtering chunk")
+            FilteredChunk = filtfilt2d(b,a,DatChunk.astype(np.float64))
+            logging.debug("Thresholding chunk")
             BinaryChunk = (FilteredChunk < -Threshold).astype(np.int8) if DETECT_POSITIVE else np.abs(FilteredChunk < -Threshold).astype(np.int8)
+            logging.deubg("Finding connected components")
             IndListsChunk = connected_components(BinaryChunk,complete_if_none(ChannelGraph,N_CH),S_JOIN_CC)              
+            logging.debug("Extracting spikes")
             for IndList in IndListsChunk:
                 wave,s_peak,st = extract_wave(IndList,FilteredChunk)
                 if inrange(s_start+s_peak,keep_start,keep_end):
