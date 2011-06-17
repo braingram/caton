@@ -362,9 +362,10 @@ def extract_spikes(DatFileName,n_ch_dat,ChannelsToUse,ChannelGraph,max_spikes=No
         #fd.seek(0)
         FilteredChunk = filtfilt2d(b,a,DatChunk.astype(np.float64))    
         Threshold = THRESH_SD*np.median(np.abs(FilteredChunk),axis=0)/.6745    
-        logging.debug("Found threshold: %f" % Threshold)
+        logging.debug("Found threshold")
         
         spike_count = 0
+        
         for s_start,s_end,keep_start,keep_end in chunk_bounds(n_samples,CHUNK_SIZE,CHUNK_OVERLAP):
             # DatChunk = np.fromfile(fd,dtype=DTYPE,count=(s_end-s_start)*n_ch_dat).reshape(s_end-s_start,n_ch_dat)[:,ChannelsToUse]
             DatChunk = read_data(DatFileName, s_start, s_end)[:,ChannelsToUse]
