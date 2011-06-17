@@ -1,0 +1,245 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Performance validation &mdash; Caton v0.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '#',
+        VERSION:     '0.1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Caton v0.1 documentation" href="index.html" />
+    <link rel="next" title="References" href="refs.html" />
+    <link rel="prev" title="Clustering" href="clustering.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="refs.html" title="References"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="clustering.html" title="Clustering"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Caton v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="performance-validation">
+<h1>Performance validation<a class="headerlink" href="#performance-validation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="intracellular-extracellular-dataset">
+<h2>Intracellular-extracellular dataset<a class="headerlink" href="#intracellular-extracellular-dataset" title="Permalink to this headline">¶</a></h2>
+<p>We test the program on the data in which a cell is recorded, <em>in vivo</em>, intracellularly and extracellularly. (The extracellular recording also contains other cells.) See (Henze et al., 2000) for a description of the methods. The dataset can be downloaded at <a class="reference external" href="http://crcns.org/data-sets/hc/hc-1">http://crcns.org/data-sets/hc/hc-1</a>.</p>
+<p>We run the clustering script on all files in the <tt class="docutils literal"><span class="pre">d11221</span></tt> group. We also extract the intracellular spikes. We compare these: an extracellular spike is matched to the intracellular spike if the time difference is less than .5 ms. We then compare the intracellular unit to the extracellular unit that matches it the most times. The following report is generated:</p>
+<div class="highlight-python"><pre>Comparing extracellular units from res file d1122101_tet_fil_fil_batch.clu.1, clu file d1122101_tet_fil_fil_batch.res.1 to intracellular unit with time file d1122101_intracellular.res.1
+Total intra: 77
+Undetected: 11
+Wrong spikes in best cluster: 4062 ==&gt; Type I error rate: 5275.3%
+Intra spikes missing from best cluster: 18 ==&gt; Type II error rate: 23.4%
+
+Comparing extracellular units from res file d11221.002_just_tet_batch.clu.1, clu file d11221.002_just_tet_batch.res.1 to intracellular unit with time file d11221.002_intracellular.res.1
+Total intra: 1049
+Undetected: 5
+Wrong spikes in best cluster: 40 ==&gt; Type I error rate: 3.8%
+Intra spikes missing from best cluster: 104 ==&gt; Type II error rate: 9.9%
+
+Comparing extracellular units from res file d1122106_fil_tet_batch.clu.1, clu file d1122106_fil_tet_batch.res.1 to intracellular unit with time file d1122106_intracellular.res.1
+Total intra: 760
+Undetected: 3
+Wrong spikes in best cluster: 35 ==&gt; Type I error rate: 4.6%
+Intra spikes missing from best cluster: 116 ==&gt; Type II error rate: 15.3%
+
+Comparing extracellular units from res file d1122109_tet_fil_fil_batch.clu.1, clu file d1122109_tet_fil_fil_batch.res.1 to intracellular unit with time file d1122109_intracellular.res.1
+Total intra: 1417
+Undetected: 208
+Wrong spikes in best cluster: 39 ==&gt; Type I error rate: 2.8%
+Intra spikes missing from best cluster: 285 ==&gt; Type II error rate: 20.1%
+
+Comparing extracellular units from res file d1122105_fil_tet_batch.clu.1, clu file d1122105_fil_tet_batch.res.1 to intracellular unit with time file d1122105_intracellular.res.1
+Total intra: 854
+Undetected: 8
+Wrong spikes in best cluster: 53 ==&gt; Type I error rate: 6.2%
+Intra spikes missing from best cluster: 83 ==&gt; Type II error rate: 9.7%
+
+Comparing extracellular units from res file d11221.001_just_tet_batch.clu.1, clu file d11221.001_just_tet_batch.res.1 to intracellular unit with time file d11221.001_intracellular.res.1
+Total intra: 130
+Undetected: 6
+Wrong spikes in best cluster: 4469 ==&gt; Type I error rate: 3437.7%
+Intra spikes missing from best cluster: 11 ==&gt; Type II error rate: 8.5%
+
+Comparing extracellular units from res file d1122103_tet_fil_fil_batch.clu.1, clu file d1122103_tet_fil_fil_batch.res.1 to intracellular unit with time file d1122103_intracellular.res.1
+Total intra: 228
+Undetected: 12
+Wrong spikes in best cluster: 378 ==&gt; Type I error rate: 165.8%
+Intra spikes missing from best cluster: 101 ==&gt; Type II error rate: 44.3%
+
+Comparing extracellular units from res file d1122104_fil_tet_batch.clu.1, clu file d1122104_fil_tet_batch.res.1 to intracellular unit with time file d1122104_intracellular.res.1
+Total intra: 102
+Undetected: 15
+Wrong spikes in best cluster: 4603 ==&gt; Type I error rate: 4512.7%
+Intra spikes missing from best cluster: 22 ==&gt; Type II error rate: 21.6%
+
+Comparing extracellular units from res file d1122107_fil_tet_batch.clu.1, clu file d1122107_fil_tet_batch.res.1 to intracellular unit with time file d1122107_intracellular.res.1
+Total intra: 1043
+Undetected: 9
+Wrong spikes in best cluster: 95 ==&gt; Type I error rate: 9.1%
+Intra spikes missing from best cluster: 82 ==&gt; Type II error rate: 7.9%
+
+Comparing extracellular units from res file d1122108_tet_fil_fil_batch.clu.1, clu file d1122108_tet_fil_fil_batch.res.1 to intracellular unit with time file d1122108_intracellular.res.1
+Total intra: 755
+Undetected: 6
+Wrong spikes in best cluster: 47 ==&gt; Type I error rate: 6.2%
+Intra spikes missing from best cluster: 40 ==&gt; Type II error rate: 5.3%
+
+Comparing extracellular units from res file d1122102_tet_fil_fil_batch.clu.1, clu file d1122102_tet_fil_fil_batch.res.1 to intracellular unit with time file d1122102_intracellular.res.1
+Total intra: 11
+Undetected: 1
+Wrong spikes in best cluster: 346 ==&gt; Type I error rate: 3145.5%
+Intra spikes missing from best cluster: 5 ==&gt; Type II error rate: 45.5%
+
+</pre>
+</div>
+<p>In most cases, the intracellular unit produced a weak signal and was grouped together with other low-amplitude units into a big cluster. The exceptions are d11221.002.dat, d1122105.dat, d1122107.dat, d1122108.dat, and d1122109.dat</p>
+<p>If you want to verify these results (or, better, change various parameters and see if you can get better results), download the <tt class="docutils literal"><span class="pre">d11221</span></tt> dataset and extract the zip archive. Navigate to <tt class="docutils literal"><span class="pre">caton/doc</span></tt> and change the line <tt class="docutils literal"><span class="pre">DataDir</span> <span class="pre">=</span> <span class="pre">...</span></tt> to point to the correct location. Then run the script <tt class="docutils literal"><span class="pre">test_d11221.py</span></tt>. The report will be in <tt class="docutils literal"><span class="pre">caton/doc/generated_data/d11221/report.txt</span></tt>. This directory also contains the clustering results (.clu files, etc.)</p>
+</div>
+<div class="section" id="performance-on-synthesized-32-channel-data">
+<h2>Performance on synthesized 32-channel data<a class="headerlink" href="#performance-on-synthesized-32-channel-data" title="Permalink to this headline">¶</a></h2>
+<p>Next, we do the only truly verifiable test we can do on 32-channel data. We take 4 channels of data from d11221.002.dat, and stack 8 copies of it with a time offset. Then we tell the program that this data comes from a 32-site probe with two rows of channels (same as example probe in <a class="reference external" href="probe_files.html#probefiles"><em>Probe files</em></a>.)</p>
+<div class="highlight-python"><pre>Comparing extracellular units from res file fake32_fake32_batch.clu.1, clu file fake32_fake32_batch.res.1 to intracellular unit with time file fake32_intracellular.res.1
+Total intra: 1041
+Undetected: 10
+Wrong spikes in best cluster: 51 ==&gt; Type I error rate: 4.9%
+Intra spikes missing from best cluster: 106 ==&gt; Type II error rate: 10.2%
+
+Comparing extracellular units from res file fake32_fake32_batch.clu.1, clu file fake32_fake32_batch.res.1 to intracellular unit with time file fake32_intracellular.res.1
+Total intra: 1039
+Undetected: 24
+Wrong spikes in best cluster: 50 ==&gt; Type I error rate: 4.8%
+Intra spikes missing from best cluster: 115 ==&gt; Type II error rate: 11.1%
+
+Comparing extracellular units from res file fake32_fake32_batch.clu.1, clu file fake32_fake32_batch.res.1 to intracellular unit with time file fake32_intracellular.res.1
+Total intra: 1041
+Undetected: 40
+Wrong spikes in best cluster: 49 ==&gt; Type I error rate: 4.7%
+Intra spikes missing from best cluster: 116 ==&gt; Type II error rate: 11.1%
+
+Comparing extracellular units from res file fake32_fake32_batch.clu.1, clu file fake32_fake32_batch.res.1 to intracellular unit with time file fake32_intracellular.res.1
+Total intra: 1040
+Undetected: 22
+Wrong spikes in best cluster: 49 ==&gt; Type I error rate: 4.7%
+Intra spikes missing from best cluster: 118 ==&gt; Type II error rate: 11.3%
+
+Comparing extracellular units from res file fake32_fake32_batch.clu.1, clu file fake32_fake32_batch.res.1 to intracellular unit with time file fake32_intracellular.res.1
+Total intra: 1039
+Undetected: 44
+Wrong spikes in best cluster: 48 ==&gt; Type I error rate: 4.6%
+Intra spikes missing from best cluster: 120 ==&gt; Type II error rate: 11.5%
+
+Comparing extracellular units from res file fake32_fake32_batch.clu.1, clu file fake32_fake32_batch.res.1 to intracellular unit with time file fake32_intracellular.res.1
+Total intra: 1040
+Undetected: 24
+Wrong spikes in best cluster: 50 ==&gt; Type I error rate: 4.8%
+Intra spikes missing from best cluster: 121 ==&gt; Type II error rate: 11.6%
+
+Comparing extracellular units from res file fake32_fake32_batch.clu.1, clu file fake32_fake32_batch.res.1 to intracellular unit with time file fake32_intracellular.res.1
+Total intra: 1039
+Undetected: 40
+Wrong spikes in best cluster: 50 ==&gt; Type I error rate: 4.8%
+Intra spikes missing from best cluster: 120 ==&gt; Type II error rate: 11.5%
+
+Comparing extracellular units from res file fake32_fake32_batch.clu.1, clu file fake32_fake32_batch.res.1 to intracellular unit with time file fake32_intracellular.res.1
+Total intra: 1041
+Undetected: 11
+Wrong spikes in best cluster: 55 ==&gt; Type I error rate: 5.3%
+Intra spikes missing from best cluster: 117 ==&gt; Type II error rate: 11.2%
+
+</pre>
+</div>
+<p>The type II error rate is higher, presumably because there are overlapping spikes that we get with the stacked 32-channel that didn&#8217;t occur with the original 32-channel data. The type I error rate is lower on some recordings&#8211;this may have to do with thresholds being different (threshold is determined by a segment of several seconds at the start of the data.)</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">Performance validation</a><ul>
+<li><a class="reference external" href="#intracellular-extracellular-dataset">Intracellular-extracellular dataset</a></li>
+<li><a class="reference external" href="#performance-on-synthesized-32-channel-data">Performance on synthesized 32-channel data</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="clustering.html"
+                                  title="previous chapter">Clustering</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="refs.html"
+                                  title="next chapter">References</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/benchmarks.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="refs.html" title="References"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="clustering.html" title="Clustering"
+             >previous</a> |</li>
+        <li><a href="index.html">Caton v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, John Schulman.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+    </div>
+  </body>
+</html>

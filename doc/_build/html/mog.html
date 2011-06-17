@@ -1,0 +1,201 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Mixture-of-Gaussians EM Algorithm &mdash; Caton v0.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '#',
+        VERSION:     '0.1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Caton v0.1 documentation" href="index.html" />
+    <link rel="next" title="Why the name “Caton”?" href="why_caton.html" />
+    <link rel="prev" title="Other included scripts" href="other_scripts.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="why_caton.html" title="Why the name “Caton”?"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="other_scripts.html" title="Other included scripts"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Caton v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="mixture-of-gaussians-em-algorithm">
+<span id="mog"></span><h1>Mixture-of-Gaussians EM Algorithm<a class="headerlink" href="#mixture-of-gaussians-em-algorithm" title="Permalink to this headline">¶</a></h1>
+<p>This software uses <a class="reference external" href="http://sourceforge.org/klustakwik">KlustaKwik</a> to do the clustering on subsets of channels. I originally used a different approach to clustering, where all channels were clustered at once using a modified EM algorithm. When I switched back to using the standard mixture-of-Gaussians EM algorithm on subsets of channels, I switched to KlustaKwik, since it is faster and better tested than my clustering program (which can be found in <tt class="docutils literal"><span class="pre">core/CEM_adjacency.py</span></tt>.)</p>
+<p>I wrote up these notes as part of the explanation of that clustering method.  Now this section is possibly unnecessary, but I include it just in case someone is interested.</p>
+<div class="section" id="em-algorithm">
+<h2>EM Algorithm<a class="headerlink" href="#em-algorithm" title="Permalink to this headline">¶</a></h2>
+<p>Clustering can be cast as a statistical inference problem like linear regression, in which we find the best model to fit our data. Here, the model is a <em>mixture model</em>, where there are several different mixture components with different parameters producing data points. The data-generating process in a mixture-of-Gaussians model is as follows:</p>
+<blockquote>
+<p>Repeat this N times independently, where N is the number of data points:</p>
+<ul class="simple">
+<li>Randomly select a mixture component m with probability  <img class="math" src="_images/math/f8e6dd6fbb8d2e108753af1f1b238b73f385ebe7.png" alt="\pi(m)"/></li>
+<li>Select a point from the probability distribution of this component, using probability distribution <img class="math" src="_images/math/fd2d3912c6b176e6469ba2b658b3eaa377a1c485.png" alt="P(X|m)=\mathcal{N}(X|\mu_{m},\Lambda_{m})"/>, where <img class="math" src="_images/math/2d8c833ed800824727cd7bd2fb9de1a12ad7e674.png" alt="\mu"/> and <img class="math" src="_images/math/2d295c3b71504a216422e5fffdfbad742c7add64.png" alt="\Lambda"/> are means and covariances.</li>
+</ul>
+</blockquote>
+<p>We assume that our dataset, i.e., our collection of feature vectors, was generated using this process. Our goal is to fit the parameters <img class="math" src="_images/math/a0eb61570bb816e49241616c3bed87942363bbd2.png" alt="\mu,\Lambda,\pi"/> to the data. In particular, we look for the <em>maximum likelihood</em> values of the parameters, which are the parameter values that maximize P(Data | Parameters). From now on, we will use X as shorthand for &#8220;data&#8221;, and <img class="math" src="_images/math/a321d1b883ba985b1f59ca076beaaf17aa8ab06c.png" alt="\Theta"/> as shorthand for &#8220;parameters&#8221;, i.e., <img class="math" src="_images/math/3235efbbe71b48b810083fc462f43c846923171a.png" alt="\{\mu,\Lambda,\pi\}"/>. Note that <img class="math" src="_images/math/16296756d5d4422ea55b3736a8d7a5ed9afdac54.png" alt="P(X | \Theta)"/> is a probability <em>density</em>, not a finite probability.</p>
+<p>Suppose Z is the latent variable that says which observed vector comes from which cluster, called the <em>responsibilities</em>. Then the <em>likelihood</em> L is as follows:</p>
+<div class="math">
+<p><img src="_images/math/037a60d4bf1eddc0c9fc12277f2160ba036b2734.png" alt="L = P(X|\mu,\Lambda,\pi)=\sum_{Z} P(X|Z,\mu,\Lambda)P(Z|\pi)" /></p>
+</div><p>We iterate the following two steps to maximize L over the parameters:</p>
+<blockquote>
+<ul class="simple">
+<li>E Step: update Z, i.e., or more precisely, <img class="math" src="_images/math/c14427a058e59c97c973baad8ee8dd68e77cf612.png" alt="P(Z | X,\mu,\Lambda,\pi)"/>.</li>
+<li>M Step: update the maximum likelihood values <img class="math" src="_images/math/b45e4a47b8a01475b41354a2548e9062e9495579.png" alt="\pi, \mu, \Lambda"/> for each cluster.</li>
+</ul>
+</blockquote>
+<p>We compute likelihood score <img class="math" src="_images/math/3c0de609917cac6719d1849af513771d0144bffe.png" alt="L = p(X | \Theta)"/> after each step. L is guaranteed to increase after each EM step pair. This is because the likelihood can be written as</p>
+<div class="math">
+<p><img src="_images/math/1bb59d793e5538211fb3bcd408f7b4c43cedfc98.png" alt="\log P(X|\Theta) = E_{Q(Z)} P(X|\Theta,Z) + KL(Q(Z) \| P(Z|X,\Theta))" /></p>
+</div><p>KL is the Kullback-Liebler divergence, a nonnegative distance between two probability distributions. In words, the above equation reads</p>
+<div class="math">
+<p><img src="_images/math/6804fcc58dc32aae6589cac4e7ccd839f16025a6.png" alt="\begin{align*}
+   \log P(X|\Theta) = (&amp;\text{log of the expected value of P(X) given some wrong distribution Q(Z) over the latent variable Z}) \\
+   + (&amp;\text{the mismatch between Q(Z) and the correct probability distribution } P(Z|X,\Theta))
+\end{align*}" /></p>
+</div><p>The likelihood score is the first term on the right-hand side, <img class="math" src="_images/math/5822cb83fa37bd3554338551a785a79f9cab1486.png" alt="E_{Q(Z)} P(X|\Theta,Z)"/>. In the M step, we strictly increase the first term <img class="math" src="_images/math/5822cb83fa37bd3554338551a785a79f9cab1486.png" alt="E_{Q(Z)} P(X|\Theta,Z)"/> while keeping the second term <img class="math" src="_images/math/b149e52edb06f4c80192cfd341a1cfdd4e71f514.png" alt="KL(Q(Z) \| P(Z|X,\Theta))"/> constant. On the E step, we drive the second term to zero, but the sum <img class="math" src="_images/math/217b344ef1b82be78b6c952e6ee89d605ecf91f9.png" alt="\log P(X|\Theta)"/> remains constant, so the first term, the likelihood score, must decrease.</p>
+<p>This is based on chapter 9 of (Bishop, 2006).</p>
+</div>
+<div class="section" id="selecting-the-number-of-clusters">
+<h2>Selecting the number of clusters<a class="headerlink" href="#selecting-the-number-of-clusters" title="Permalink to this headline">¶</a></h2>
+<p>The number of clusters is not known beforehand. More mixture components always leads to a higher likelihood score. Therefore, to be able to use split and delete steps, and sensibly determine the number of clusters, we must add a penalty term based on number of clusters&#8211;a penalty for model complexity. The penalty we use is based on the Bayes Information Criteria (BIC).</p>
+<p>To understand the BIC we must introduce the Bayesian perspective on inference (as opposed to the maximum likelihood approach). In the Bayesian approach, we are looking for the posterior probabilities like P(Model | Data) and P(Parameters | Data). This requires us to assign prior probabilities P(Model) and P(Parameters).</p>
+<p>Terminology note:</p>
+<blockquote>
+<ul class="simple">
+<li>&#8220;Parameter&#8221; refers to numerical values, like the cluster means <img class="math" src="_images/math/2d8c833ed800824727cd7bd2fb9de1a12ad7e674.png" alt="\mu"/>.</li>
+<li>&#8220;Model&#8221; refers to the number of mixture components, i.e., we have a 5-cluster model and 6-cluster model for the data.</li>
+</ul>
+</blockquote>
+<p>The Bayesian approach gives a sensible way to do model selection, i.e., determine the number of clusters. We simply look for the model that has the highest posterior probability P(Model | Data).</p>
+<blockquote>
+P(Model | Data) = P(Data | Model) P(Model) / P(Data)</blockquote>
+<p>Ignoring P(Data)&#8211;which is summed over all models&#8211;and assuming the same prior probability P(Model) for all all models, we are left with:</p>
+<blockquote>
+P(Model | Data) ~ P(Data | Model)</blockquote>
+<p>P(Data | Model) is really an integral over all the possible parameters that go with the model. Using the notation X = Data, <img class="math" src="_images/math/a321d1b883ba985b1f59ca076beaaf17aa8ab06c.png" alt="\Theta"/> = Parameters, <img class="math" src="_images/math/e6d64e475f6183ad1b0adadca7cbfa6a14ed5d75.png" alt="\mathcal{M}"/> = Model.</p>
+<div class="math">
+<p><img src="_images/math/2cdb12d8340a48f46bdb233d5bb97fe0f82a2f36.png" alt="\begin{align*}
+   P(X | \mathcal{M}) &amp;= \int d\Theta P(X | \Theta,\mathcal{M}) P(\Theta,\mathcal{M}) \\
+   &amp;\approx P(X | \Theta_{MAP},\mathcal{M}) V_{\text{posterior}} \frac{1}{V_{\text{prior}}}
+\end{align*}" /></p>
+</div><p><img class="math" src="_images/math/c8b6f8f7c66f0a848ec45c82af21fe2d950eee12.png" alt="V_{\text{posterior}}"/> is the volume of the peak in the posterior distribution over parameters <img class="math" src="_images/math/58160ab742350e8dd20f00198365c9549a00276b.png" alt="P(\Theta|X,\mathcal{M})"/>, and <img class="math" src="_images/math/bdd35137476051b9202b3f4a08537ee8586988f6.png" alt="V_{\text{prior}}"/> is the volume of the peak in the prior distribution over parameters <img class="math" src="_images/math/1a3010ba500c7192335acab7e11e950015975818.png" alt="P(\Theta|\mathcal{M})"/>. <img class="math" src="_images/math/e196cedbc9dd86e2e02a3c3eba31d6652c213534.png" alt="\Theta_{MAP}"/> is the &#8220;maximum a posteriori&#8221; value of <img class="math" src="_images/math/a321d1b883ba985b1f59ca076beaaf17aa8ab06c.png" alt="\Theta"/>, i.e., the value that maximizes <img class="math" src="_images/math/01e5e523344d9edf64417bd5018661d16d3362c8.png" alt="P(X | \Theta_{MAP})"/>. Here we used the approximation of a Gaussian integral as the peak value times its width. Thus <img class="math" src="_images/math/a6a96d18bf4f5ee85f47d158842fd9c34dea6427.png" alt="P(\Theta,\mathcal{M}) \approx \frac{1}{V_{\text{prior}}}"/> and <img class="math" src="_images/math/28a592c462a7dd03fc6c21e81f01a0febade371b.png" alt="P(X | \Theta,\mathcal{M}) \approx P(X | \Theta_{MAP},\mathcal{M}) V_{\text{posterior}}"/>.</p>
+<p>The term <img class="math" src="_images/math/9ffcb05058b8ea3c7b784c332c9b8978781697eb.png" alt="\frac{V_{\text{posterior}}}{V_{\text{prior}}}"/> acts like a &#8220;complexity penalty&#8221; that penalizes models with more clusters. Assuming scalar parameters <img class="math" src="_images/math/c800d39fe87447ee33c5303862aeaeb0e21685ff.png" alt="w_1,w_2,\dots,w_p"/>, then</p>
+<div class="math">
+<p><img src="_images/math/f9e229687fd31ef288ba647541682bb38dfb1ed2.png" alt="`\prod_{i=1}^p \frac{\delta w_{i,\text{prior}}}{\delta w_{i,\text{posterior}}}=\left(\frac{\delta w_{\text{prior}}}{\delta w_{\text{posterior}}}\right)^p`" /></p>
+</div><p>Thus we see that this term decreases exponentially with number of parameters.</p>
+<p>The idea behind the BIC is to try to approximate the Bayesian calculation of the posterior probability <img class="math" src="_images/math/272a91bce871276e4cf331e394ce2086c2a72d1c.png" alt="P(X | \mathcal{M}) = P(X | \Theta_{MAP},\mathcal{M}) \frac{V_{\text{posterior}}}{V_{\text{prior}}}"/>. Then we find the model that maximizes this. <img class="math" src="_images/math/7858206472649902e667c77727d4560bec2d0ada.png" alt="P(X | \Theta_{MAP}) \approx P(X | \Theta_{ML})"/>. So we have to make a rough approximation of <img class="math" src="_images/math/9ffcb05058b8ea3c7b784c332c9b8978781697eb.png" alt="\frac{V_{\text{posterior}}}{V_{\text{prior}}}"/>, even though we do not have a prior or a posterior distribution.</p>
+<p>For a given scalar parameter <img class="math" src="_images/math/9ee4b825a2e36ae093ed7be5e4851ef453b34914.png" alt="w"/>, suppose the width of the prior is <img class="math" src="_images/math/5596c4820ce0e6024b2ae0b42c685a62fe162d09.png" alt="\delta w_{\text{prior}}"/>. Then, after N measurements, we get <img class="math" src="_images/math/e725a1d109be2a1751b9a20e3a1ebdda3005dc15.png" alt="\delta w_{\text{posterior}} \approx \delta w_{\text{prior}}/\sqrt N"/>. Using the above equation, we get</p>
+<div class="math">
+<p><img src="_images/math/bdae4b124a088833db36b4a56a34666d91c60953.png" alt="\begin{align*}
+     \frac{V_{\text{posterior}}}{V_{\text{prior}}} &amp;\approx \left( \frac{1}{\sqrt N} \right)^p \\
+     \log \frac{V_{\text{posterior}}}{V_{\text{prior}}} &amp;\approx p/2 \log N = BIC
+\end{align*}" /></p>
+</div><p>Here N is the number of points, and p is the number of parameters.</p>
+<p>Using the BIC, we do model selection by maximizing</p>
+<div class="math">
+<p><img src="_images/math/cdf8fd7bb223815ec26d5743a26e660f5b583354.png" alt="\log P(X | \Theta_{ML}) - BIC = \log P(X | \Theta_{ML}) - p/2 \log N" /></p>
+</div><p>In the case of clustering, the parameters of a given cluster are only constrained by the points in that cluster&#8211;not all points&#8211;so the following is more accurate:</p>
+<div class="math">
+<p><img src="_images/math/3e864405182cd8a0e7a2eb67146d77977b8073f3.png" alt="BIC = \sum_m p/2 \log N_m" /></p>
+</div><p>where <img class="math" src="_images/math/917e843294a2cb07f60de6deb6eb4d87b84e71e6.png" alt="N_m"/> is the number of points in the mth cluster. This amounts to a constant correction of <img class="math" src="_images/math/0d81e37b0a6ae7982401df2062fd96f1c533496f.png" alt="p/2 \log M"/>, where M is the total number of clusters. Note that smaller clusters are penalized less than larger clusters, though a small cluster and a large cluster are penalized more than two medium-sized clusters. Interestingly, this resembles the minimum message length, which is also frequently used as a complexity penalty for model selection. In clustering, it takes the form (Wallace et al., 1987) via (Shoham et al., 2003):</p>
+<div class="math">
+<p><img src="_images/math/731fe18140d5c9b61bada0e48e2d5b9024eac39b.png" alt="MML = \sum_m p/2 \log N_m/12 + M/2 \log N/12 + M(p+1)/2" /></p>
+</div><ul class="simple">
+<li>Bishop, M. <em>Pattern recognition and machine learning</em> (2006).</li>
+<li>Shoham, S. and Fellows, M.R. and Normann, R.A. <em>Robust, automatic spike sorting using mixtures of multivariate t-distributions</em>, Journal of neuroscience methods (2003).</li>
+<li>Wallace, C.S. and Freeman, P.R. <em>Estimation and inference by compact coding</em>. Journal of the royal statistical society (1987).</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">Mixture-of-Gaussians EM Algorithm</a><ul>
+<li><a class="reference external" href="#em-algorithm">EM Algorithm</a></li>
+<li><a class="reference external" href="#selecting-the-number-of-clusters">Selecting the number of clusters</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="other_scripts.html"
+                                  title="previous chapter">Other included scripts</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="why_caton.html"
+                                  title="next chapter">Why the name &#8220;Caton&#8221;?</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/mog.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="why_caton.html" title="Why the name “Caton”?"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="other_scripts.html" title="Other included scripts"
+             >previous</a> |</li>
+        <li><a href="index.html">Caton v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, John Schulman.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Usage &mdash; Caton v0.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '#',
+        VERSION:     '0.1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Caton v0.1 documentation" href="index.html" />
+    <link rel="next" title="Probe files" href="probe_files.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="probe_files.html" title="Probe files"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="Installation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Caton v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="usage">
+<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="data-file-format">
+<h2>Data file format<a class="headerlink" href="#data-file-format" title="Permalink to this headline">¶</a></h2>
+<p>The input and output data are the same as the formats used by Klusters and Neuroscope. These are described at <a class="reference external" href="http://neuroscope.sourceforge.net/UserManual/data-files.html">http://neuroscope.sourceforge.net/UserManual/data-files.html</a></p>
+<p>Input to <tt class="docutils literal"><span class="pre">cluster_from_raw_data.py</span></tt> is a binary file, which is a contiguous block of 16-bit integers:</p>
+<div class="highlight-python"><pre>sample 1, channel 1
+sample 1, channel 2
+...
+sample 1, channel C
+sample 2, channel 1
+sample 2, channel 2
+...
+sample 2 channel C
+...</pre>
+</div>
+</div>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>There are two different processes you can use to sort your data.</p>
+<blockquote>
+<ol class="arabic simple">
+<li>Batch<ul>
+<li>Do a large batch job to process all of your data at once.</li>
+</ul>
+</li>
+<li>Batch, then generalize:<ul>
+<li>Process a subset of your data to generate a clustering model (a bunch of clusters and their parameters),</li>
+<li>Possibly modify that model manually (e.g. with <a class="reference external" href="http://klusters.sourceforge.net">Klusters</a>)</li>
+<li>Process the rest of your data, and use this model to classify the spikes.</li>
+</ul>
+</li>
+</ol>
+</blockquote>
+<div class="section" id="batch">
+<h3>Batch<a class="headerlink" href="#batch" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<ul>
+<li><p class="first">Navigate to the directory containing your <tt class="docutils literal"><span class="pre">.dat</span></tt> file.</p>
+</li>
+<li><p class="first">Make one or more <tt class="docutils literal"><span class="pre">.probe</span></tt> files in the directory of the <tt class="docutils literal"><span class="pre">.dat</span></tt> file (see <a class="reference external" href="probe_files.html#probefiles"><em>Probe files</em></a>).</p>
+</li>
+<li><p class="first">Type the following:</p>
+<div class="highlight-python"><pre>cluster_from_raw_data.py your_dat_file.dat</pre>
+</div>
+</li>
+<li><p class="first">The output will be in the directory <tt class="docutils literal"><span class="pre">your_dat_file_tetrode_batch/</span></tt> (or something like that, depending on the name of your probe file.) If there are multiple probe files, there will be one output directory for each probe file in the directory of your <tt class="docutils literal"><span class="pre">.dat</span></tt> file.</p>
+</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="generalize">
+<h3>Generalize<a class="headerlink" href="#generalize" title="Permalink to this headline">¶</a></h3>
+<p><strong>NOT CURRENTLY FUNCTIONAL</strong></p>
+<blockquote>
+<ul>
+<li><p class="first">Follow the batch instructions above, except restrict the number of spikes extracted:</p>
+<div class="highlight-python"><pre>cluster_from_raw_data.py your_dat_file.dat -n 100000</pre>
+</div>
+</li>
+<li><p class="first">Then run the generalize script, and tell it what directory to look in for the results of the batch clustering.:</p>
+<div class="highlight-python"><pre>generalize_from_raw_data.py your_dat_file.dat</pre>
+</div>
+</li>
+<li><p class="first">The output will be in <tt class="docutils literal"><span class="pre">your_dat_file_tetrode_generalize/</span></tt></p>
+</li>
+</ul>
+</blockquote>
+</div>
+</div>
+<div class="section" id="script-options-reference">
+<span id="id1"></span><h2>Script options reference<a class="headerlink" href="#script-options-reference" title="Permalink to this headline">¶</a></h2>
+<p>The following are the outputs of <tt class="docutils literal"><span class="pre">[script</span> <span class="pre">name].py</span> <span class="pre">-h</span></tt></p>
+<div class="section" id="cluster-from-raw-data-py">
+<h3>cluster_from_raw_data.py<a class="headerlink" href="#cluster-from-raw-data-py" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><pre>Usage: 
+This is the main script that you use to spike-sort your data.
+Just make the probe file and you're good to go (see documentation).
+You will be prompted for sample rate and number of channels if no xml file is found.
+
+cluster_from_raw_data.py your_dat_file.dat [options]
+cluster_from_raw_data.py -h displays help
+
+Options:
+  -h, --help            show this help message and exit
+  -p PROBE, --probe=PROBE
+                        Specify the location of the probe file. By default,
+                        program looks for a .probe file in .dat directory
+  -n MAX_SPIKES         Extract and cluster only the first n spikes.
+  -o OUTPUT, --output=OUTPUT
+                        Directory where the output directory 'basename/' ends
+                        up. By default, output goes next to .dat file.
+  --fast                Makes pre-clustering go much faster by skipping
+                        slowest step: interpolation around the inferred peak.
+  --fast2               Makes clustering go fast by doing EM algorithm only
+                        once with 5 clusters, instead of all numbers between 3
+                        and 14
+</pre>
+</div>
+</div>
+<div class="section" id="generalize-from-raw-data-py">
+<h3>generalize_from_raw_data.py<a class="headerlink" href="#generalize-from-raw-data-py" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><pre>Usage: 
+This script is used if you have run cluster_from_raw_data on a subset of your data, and you want to extend this sort to the rest of your data.
+
+generalize_from_raw_data.py your_dat_file.dat directory_with_clu_file [options]
+generalize_from_raw_data.py -h displays help
+
+Options:
+  -h, --help            show this help message and exit
+  -p PROBE, --probe=PROBE
+                        Specify the location of the probe file. By default,
+                        program looks for a .probe file in .dat directory
+  -n MAX_SPIKES         Extract and cluster only the first n spikes.
+  -o OUTPUT, --output=OUTPUT
+                        Directory where the output directory 'basename/' ends
+                        up. By default, output goes next to .dat file.
+  --fast                Makes pre-clustering go much faster by skipping
+                        slowest step: interpolation around the inferred peak.
+  --fast2               Makes clustering go fast by doing EM algorithm only
+                        once with 5 clusters, instead of all numbers between 3
+                        and 14
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">Usage</a><ul>
+<li><a class="reference external" href="#data-file-format">Data file format</a></li>
+<li><a class="reference external" href="#overview">Overview</a><ul>
+<li><a class="reference external" href="#batch">Batch</a></li>
+<li><a class="reference external" href="#generalize">Generalize</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#script-options-reference">Script options reference</a><ul>
+<li><a class="reference external" href="#cluster-from-raw-data-py">cluster_from_raw_data.py</a></li>
+<li><a class="reference external" href="#generalize-from-raw-data-py">generalize_from_raw_data.py</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="installation.html"
+                                  title="previous chapter">Installation</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="probe_files.html"
+                                  title="next chapter">Probe files</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/usage.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="probe_files.html" title="Probe files"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="Installation"
+             >previous</a> |</li>
+        <li><a href="index.html">Caton v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, John Schulman.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+    </div>
+  </body>
+</html>

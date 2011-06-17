@@ -1,0 +1,200 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Caton: software for spike sorting &mdash; Caton v0.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '#',
+        VERSION:     '0.1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Caton v0.1 documentation" href="#" />
+    <link rel="next" title="Installation" href="installation.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="installation.html" title="Installation"
+             accesskey="N">next</a> |</li>
+        <li><a href="#">Caton v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="caton-software-for-spike-sorting">
+<h1>Caton: software for spike sorting<a class="headerlink" href="#caton-software-for-spike-sorting" title="Permalink to this headline">¶</a></h1>
+<p>Caton (<a class="reference external" href="http://caton.googlecode.com">http://caton.googlecode.com</a>) is a software package that automates the process of spike sorting, starting with raw data. It is specially designed to be used on data from multi-site probes with up to 32 sites or more. The software was named after Richard Caton, the 19th century Englishman who first recorded electrical signals in the brain.</p>
+<p>I (John Schulman) wrote this software while I was working in the <a class="reference external" href="http://osiris.rutgers.edu/frontmid/indexmid.html">Buzsáki lab</a> in the summer of 2009.</p>
+<p>This program serves as a complete tool for the spike sorting. The outputs are in formats that can be viewed in <a class="reference external" href="http://klusters.sourceforge.net">Klusters</a> and <a class="reference external" href="http://neuroscope.sourceforge.net">Neuroscope</a>.</p>
+<div class="section" id="user-s-guide">
+<h2>User&#8217;s guide<a class="headerlink" href="#user-s-guide" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference external" href="installation.html#python-dependencies-on-mac">Python dependencies on Mac</a></li>
+<li class="toctree-l2"><a class="reference external" href="installation.html#python-dependencies-on-debian-ubuntu-linux">Python dependencies on Debian/Ubuntu Linux</a></li>
+<li class="toctree-l2"><a class="reference external" href="installation.html#python-dependencies-with-sage">Python dependencies with sage</a></li>
+<li class="toctree-l2"><a class="reference external" href="installation.html#installing-klustakwik">Installing KlustaKwik</a></li>
+<li class="toctree-l2"><a class="reference external" href="installation.html#installing-caton">Installing Caton</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="usage.html">Usage</a><ul>
+<li class="toctree-l2"><a class="reference external" href="usage.html#data-file-format">Data file format</a></li>
+<li class="toctree-l2"><a class="reference external" href="usage.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference external" href="usage.html#script-options-reference">Script options reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="probe_files.html">Probe files</a><ul>
+<li class="toctree-l2"><a class="reference external" href="probe_files.html#zero-dimensional-probe">Zero-dimensional probe</a></li>
+<li class="toctree-l2"><a class="reference external" href="probe_files.html#one-dimensional-probe">One-dimensional probe</a></li>
+<li class="toctree-l2"><a class="reference external" href="probe_files.html#two-dimensional-probe">Two-dimensional probe</a></li>
+<li class="toctree-l2"><a class="reference external" href="probe_files.html#advanced-probe-file-usage">Advanced probe file usage</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="technical-documentation">
+<h2>Technical documentation<a class="headerlink" href="#technical-documentation" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="detect_extract.html">Detection and extraction of spikes</a><ul>
+<li class="toctree-l2"><a class="reference external" href="detect_extract.html#filtering">Filtering</a></li>
+<li class="toctree-l2"><a class="reference external" href="detect_extract.html#thresholding">Thresholding</a></li>
+<li class="toctree-l2"><a class="reference external" href="detect_extract.html#spike-selection">Spike selection</a></li>
+<li class="toctree-l2"><a class="reference external" href="detect_extract.html#alignment">Alignment</a></li>
+<li class="toctree-l2"><a class="reference external" href="detect_extract.html#feature-extraction">Feature extraction</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="clustering.html">Clustering</a><ul>
+<li class="toctree-l2"><a class="reference external" href="clustering.html#cluster-subsets-and-merge-procedure">Cluster-subsets-and-merge procedure</a></li>
+<li class="toctree-l2"><a class="reference external" href="clustering.html#generalize-classifying-new-data">Generalize: classifying new data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="benchmarks.html">Performance validation</a><ul>
+<li class="toctree-l2"><a class="reference external" href="benchmarks.html#intracellular-extracellular-dataset">Intracellular-extracellular dataset</a></li>
+<li class="toctree-l2"><a class="reference external" href="benchmarks.html#performance-on-synthesized-32-channel-data">Performance on synthesized 32-channel data</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="refs.html">References</a><ul>
+<li class="toctree-l2"><a class="reference external" href="refs.html#electrophysiology">Electrophysiology</a></li>
+<li class="toctree-l2"><a class="reference external" href="refs.html#spike-sorting">Spike sorting</a></li>
+<li class="toctree-l2"><a class="reference external" href="refs.html#math">Math</a></li>
+<li class="toctree-l2"><a class="reference external" href="refs.html#other">Other</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="refs.html#other-spike-sorting-software">Other spike sorting software</a></li>
+<li class="toctree-l1"><a class="reference external" href="refs.html#python-packages">Python packages</a></li>
+</ul>
+</div>
+<div class="section" id="appendix">
+<h2>Appendix<a class="headerlink" href="#appendix" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="other_scripts.html">Other included scripts</a><ul>
+<li class="toctree-l2"><a class="reference external" href="other_scripts.html#check-crosstalk-py">check_crosstalk.py</a></li>
+<li class="toctree-l2"><a class="reference external" href="other_scripts.html#plot-probe-py">plot_probe.py</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="mog.html">Mixture-of-Gaussians EM Algorithm</a><ul>
+<li class="toctree-l2"><a class="reference external" href="mog.html#em-algorithm">EM Algorithm</a></li>
+<li class="toctree-l2"><a class="reference external" href="mog.html#selecting-the-number-of-clusters">Selecting the number of clusters</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="why_caton.html">Why the name &#8220;Caton&#8221;?</a></li>
+</ul>
+<ul class="simple">
+<li><a class="reference external" href="search.html"><em>Search Page</em></a></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="#">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">Caton: software for spike sorting</a><ul>
+<li><a class="reference external" href="#user-s-guide">User&#8217;s guide</a><ul>
+</ul>
+</li>
+<li><a class="reference external" href="#technical-documentation">Technical documentation</a><ul>
+</ul>
+</li>
+<li><a class="reference external" href="#references">References</a><ul>
+</ul>
+</li>
+<li><a class="reference external" href="#appendix">Appendix</a><ul>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            <h4>Next topic</h4>
+            <p class="topless"><a href="installation.html"
+                                  title="next chapter">Installation</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/index.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="installation.html" title="Installation"
+             >next</a> |</li>
+        <li><a href="#">Caton v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, John Schulman.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+    </div>
+  </body>
+</html>

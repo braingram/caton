@@ -1,0 +1,223 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Clustering &mdash; Caton v0.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '#',
+        VERSION:     '0.1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Caton v0.1 documentation" href="index.html" />
+    <link rel="next" title="Performance validation" href="benchmarks.html" />
+    <link rel="prev" title="Detection and extraction of spikes" href="detect_extract.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="benchmarks.html" title="Performance validation"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="detect_extract.html" title="Detection and extraction of spikes"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Caton v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="clustering">
+<span id="id1"></span><h1>Clustering<a class="headerlink" href="#clustering" title="Permalink to this headline">¶</a></h1>
+<p>The clustering procedure splits the probe into groups of four sites apiece, clusters separately on every group, and then combines the results. Note that the spike detection is only performed once, so that the same spike is clustered multiple times. Using the clusterings on separate subsets of spikes, the program infers a final, global clustering on the entire set of spikes. Each spike is classified into only one of these final clusters.</p>
+<div class="section" id="cluster-subsets-and-merge-procedure">
+<h2>Cluster-subsets-and-merge procedure<a class="headerlink" href="#cluster-subsets-and-merge-procedure" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>The clustering procedure can be summarized as follows.</dt>
+<dd><ul class="first last simple">
+<li>Select a set of channel groups. Each channel group is an overlapping subset of channels, and the channel groups overlap (see below example).</li>
+<li>For each channel group, select the spikes that are superthreshold on at least one of those channels.</li>
+<li>Cluster the spikes on each channel group</li>
+<li>Combine these clusterings on the separate groups into a single clustering, where each spike is assigned to a single cluster.</li>
+</ul>
+</dd>
+</dl>
+<p>Each step will be explained in detail below.</p>
+<p>The selection of channel groups depends on the type of probe being considered</p>
+<blockquote>
+<ul class="simple">
+<li>0-dimensional probe&#8211;several close sites, e.g. a tetrode. Then there is only one group, which contains all of the channels.</li>
+<li>1-dimensional probe&#8211;a shank with a single column of channels. Then the groups are every sequence of four consecutive channels, e.g. [0,1,2,3], [1,2,3,4], [2,3,4,5], ...</li>
+<li>2-dimensional probe&#8211;a two-dimensional array of recording sites. We generate the Delaunay triangulation of the recording sites. Then every pair of adjacent triangles   yields a 4-channel subset.</li>
+</ul>
+</blockquote>
+<div class="figure align-center">
+<img alt="_images/mar32.png" src="_images/mar32.png" style="width: 5cm;" />
+</div>
+<p>Groups:</p>
+<blockquote>
+<div class="line-block">
+<div class="line">[[&#8216;SP1&#8217;, &#8216;SP2&#8217;, &#8216;SP3&#8217;, &#8216;SP4&#8217;], [&#8216;SP2&#8217;, &#8216;SP3&#8217;, &#8216;SP4&#8217;, &#8216;SP5&#8217;], [&#8216;SP3&#8217;, &#8216;SP4&#8217;, &#8216;SP5&#8217;, &#8216;SP6&#8217;], [&#8216;SP4&#8217;, &#8216;SP5&#8217;, &#8216;SP6&#8217;, &#8216;SP7&#8217;],</div>
+<div class="line">[&#8216;SP5&#8217;, &#8216;SP6&#8217;, &#8216;SP7&#8217;, &#8216;SP8&#8217;], [&#8216;SP6&#8217;, &#8216;SP7&#8217;, &#8216;SP8&#8217;, &#8216;SP9&#8217;], [&#8216;SP7&#8217;, &#8216;SP8&#8217;, &#8216;SP9&#8217;, &#8216;SP10&#8217;], [&#8216;SP8&#8217;, &#8216;SP9&#8217;, &#8216;SP10&#8217;, &#8216;SP11&#8217;],</div>
+<div class="line">[&#8216;SP9&#8217;, &#8216;SP10&#8217;, &#8216;SP11&#8217;, &#8216;SP12&#8217;], [&#8216;SP10&#8217;, &#8216;SP11&#8217;, &#8216;SP12&#8217;, &#8216;SP13&#8217;], [&#8216;SP11&#8217;, &#8216;SP12&#8217;, &#8216;SP13&#8217;, &#8216;SP14&#8217;], [&#8216;SP12&#8217;, &#8216;SP13&#8217;, &#8216;SP14&#8217;, &#8216;SP15&#8217;],</div>
+<div class="line">[&#8216;SP13&#8217;, &#8216;SP14&#8217;, &#8216;SP15&#8217;, &#8216;SP16&#8217;], [&#8216;SP17&#8217;, &#8216;SP14&#8217;, &#8216;SP15&#8217;, &#8216;SP16&#8217;], [&#8216;SP17&#8217;, &#8216;SP18&#8217;, &#8216;SP15&#8217;, &#8216;SP16&#8217;], [&#8216;SP17&#8217;, &#8216;SP18&#8217;, &#8216;SP19&#8217;, &#8216;SP16&#8217;],</div>
+<div class="line">[&#8216;SP17&#8217;, &#8216;SP18&#8217;, &#8216;SP19&#8217;, &#8216;SP20&#8217;], [&#8216;SP18&#8217;, &#8216;SP19&#8217;, &#8216;SP20&#8217;, &#8216;SP21&#8217;], [&#8216;SP19&#8217;, &#8216;SP20&#8217;, &#8216;SP21&#8217;, &#8216;SP22&#8217;], [&#8216;SP20&#8217;, &#8216;SP21&#8217;, &#8216;SP22&#8217;, &#8216;SP23&#8217;],</div>
+<div class="line">[&#8216;SP21&#8217;, &#8216;SP22&#8217;, &#8216;SP23&#8217;, &#8216;SP24&#8217;], [&#8216;SP22&#8217;, &#8216;SP23&#8217;, &#8216;SP24&#8217;, &#8216;SP25&#8217;], [&#8216;SP23&#8217;, &#8216;SP24&#8217;, &#8216;SP25&#8217;, &#8216;SP26&#8217;], [&#8216;SP24&#8217;, &#8216;SP25&#8217;, &#8216;SP26&#8217;, &#8216;SP27&#8217;],</div>
+<div class="line">[&#8216;SP25&#8217;, &#8216;SP26&#8217;, &#8216;SP27&#8217;, &#8216;SP28&#8217;], [&#8216;SP26&#8217;, &#8216;SP27&#8217;, &#8216;SP28&#8217;, &#8216;SP29&#8217;], [&#8216;SP27&#8217;, &#8216;SP28&#8217;, &#8216;SP29&#8217;, &#8216;SP30&#8217;], [&#8216;SP28&#8217;, &#8216;SP29&#8217;, &#8216;SP30&#8217;, &#8216;SP31&#8217;]]</div>
+</div>
+</blockquote>
+<p>For each channel group, we select the subset of spikes that are superthreshold on at least one of those channels. So a typical spike is classified in several channel groups. On each channel group, we cluster using the mixture-of-Gaussians EM algorithm. We use Ken Harris&#8217; <a class="reference external" href="http://klustakwik.sourceforge.net">KlustaKwik</a> to do the clustering. See <a class="reference external" href="mog.html#mog"><em>Mixture-of-Gaussians EM Algorithm</em></a> for a discussion of clustering with the EM algorithm.</p>
+<p>Next, we must combine these partial clusterings into a global clustering on all channels. Each spike should only appear in one of these final clusters. We use an ad hoc method with the following motivation: a spike that is high-amplitude on one part of probe will be low-amplitude on distant channels, producing a cluster that can&#8217;t be isolated on those distant channel groups. We start with the high-amplitude clusters, set them aside as good clusters, and pull those spikes out of the other clusters.</p>
+<p>More precisely, let us say we have G channel groups, and each group has <img class="math" src="_images/math/724965b56285badaca05f2886c6d3b73f4bca86b.png" alt="M_g"/> clusters. Thus our clusters can be labeled (g,m), where</p>
+<div class="math">
+<p><img src="_images/math/75ca4ab48bf7e549a12b8cebebc10efca933c78c.png" alt="\begin{align*}
+(g,m) &amp;= \\
+&amp;(1,1), (1,2), \cdots, (1, M_1) \\
+&amp;(2,1), (2,2), \cdots, (2, M_2) \\
+&amp;\cdots\\
+&amp;(G,1), (G,2), \cdots, (G, M_G)
+\end{align*}" /></p>
+</div><p>We calculate the amplitude of each cluster. This is taken to be the peak-to-peak value on the mean waveform of the cluster.</p>
+<p>Then we determine the final clustering using the following algorithm. Here is a reference for the notation:</p>
+<blockquote>
+<div class="line-block">
+<div class="line"><img class="math" src="_images/math/34857b3ba74ce5cd8607f3ebd23e9015908ada71.png" alt="i"/>: index for ordered clusters. The clusters are ordered by amplitude.</div>
+<div class="line"><img class="math" src="_images/math/e86919caff4a26af2c8867c56bcd9134bfd241ac.png" alt="P_i"/>: the set of points in cluster i.</div>
+<div class="line"><img class="math" src="_images/math/2744600189f7f1df31756f2022b2d5212ef1c767.png" alt="A_i"/>: the amplitude of the cluster i.</div>
+<div class="line"><img class="math" src="_images/math/45bcb9b6f87c607aa45c62743788fb523fd31d7b.png" alt="(g_i,m_i)"/>: the (group, cluster number) corresponding to cluster i.</div>
+<div class="line"><img class="math" src="_images/math/36f73fc1312ee0349b3f3a0f3bd9eb5504339011.png" alt="p"/>: an arbitrary point.</div>
+<div class="line"><img class="math" src="_images/math/dfb064112b6c94470339f6571f69d07afc1c024c.png" alt="K"/>: the total number of clusters, across all channel groups.</div>
+</div>
+</blockquote>
+<p>Here is the algorithm:</p>
+<blockquote>
+<div class="line-block">
+<div class="line">Order the clusters <img class="math" src="_images/math/ce170a0fdd02a092b5c81412b634272c5f575c39.png" alt="(g_i,m_i),\  i = 1,2,\cdots, K"/> so that <img class="math" src="_images/math/db9b41a9d98ec542e0b8e0b1fac6906bbbd23838.png" alt="A_1 &lt; A_2 &lt; ... &lt; A_K"/>.</div>
+<div class="line">Label every point p as <cite>not-taken</cite> (as opposed to <cite>taken</cite>), and create lists <cite>good-clusters</cite> and <cite>bad-clusters</cite>.</div>
+<div class="line">For i from 1 to K:</div>
+</div>
+<blockquote>
+<div class="line-block">
+<div class="line">Consider the points <img class="math" src="_images/math/e86919caff4a26af2c8867c56bcd9134bfd241ac.png" alt="P_i"/>. If more than 80% of them are designated <cite>not-taken</cite> then add cluster <img class="math" src="_images/math/45bcb9b6f87c607aa45c62743788fb523fd31d7b.png" alt="(g_i,m_i)"/> to the list <cite>good-clusters</cite>. Otherwise add <img class="math" src="_images/math/45bcb9b6f87c607aa45c62743788fb523fd31d7b.png" alt="(g_i,m_i)"/> to the list <cite>bad-clusters</cite>.</div>
+<div class="line">Associate <img class="math" src="_images/math/45bcb9b6f87c607aa45c62743788fb523fd31d7b.png" alt="(g_i,m_i)"/> with the set of points <img class="math" src="_images/math/3149fc7850e05c76dff1d07473b851956e200ae1.png" alt="\{p|p\in P_i \text{ and p is \emph{not-taken}} \}"/>.</div>
+<div class="line">Label all points in <img class="math" src="_images/math/e86919caff4a26af2c8867c56bcd9134bfd241ac.png" alt="P_i"/> as <cite>taken</cite>.</div>
+</div>
+</blockquote>
+<div class="line-block">
+<div class="line">The union of all of clusters in <cite>bad-clusters</cite> is designated as uncategorized noise points, whereas each cluster in <cite>good-clusters</cite> is associated with a set of points, containing between 80% and 100% of the original points from that cluster.</div>
+</div>
+</blockquote>
+<p>Thus a large number of clusters, with overlapping subsets of points, is turned into a small set of mutually disjoint, good clusters, and a large number of noise points.</p>
+</div>
+<div class="section" id="generalize-classifying-new-data">
+<h2>Generalize: classifying new data<a class="headerlink" href="#generalize-classifying-new-data" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">generalize-from-raw-data.py</span></tt> script uses the clustering generated from part of the data to classify new spikes. Finding the best-matching cluster is not so straightforward, because</p>
+<blockquote>
+<ol class="arabic simple">
+<li>We only want to use the channels where this spike produces a measurable signal.</li>
+<li>There is a gigantic noise cluster. How do we decide whether to put the point in the best-matching cluster or the noise cluster?</li>
+</ol>
+</blockquote>
+<p>Here&#8217;s how we address these issues:</p>
+<blockquote>
+<ol class="arabic simple">
+<li>We want to select one of our channel groups. First we narrow the selection down to the channel groups that contain all of the superthreshold channels of the spike, or as many as possible. Then we select the group where <img class="math" src="_images/math/255728b60545d5c47341c620466bbae2dabb2684.png" alt="\sum_c A_c"/> is maximal. <img class="math" src="_images/math/28953282e40002d6ac8b071a1ced0db3836493be.png" alt="A_c"/> is given by the absolute value of the first feature&#8211;the first principal component&#8211;and is basically equivalent to peak amplitude.</li>
+<li>We define a cutoff for each cluster. When a spike is classified into the most probable cluster, then if the likelihood is below the cutoff for the cluster, then the spike is classified as noise. There are two types of errors that could occur: (I) a noise point is mistakenly classified as belonging to cluster m, and (II) a point from cluster m is mistakenly classified as noise. There is a tradeoff between minimizing (I) errors and (II) errors, so we try to minimize their sum.</li>
+</ol>
+</blockquote>
+<p>We do a new classification, classifying all points into the best matching non-noise cluster. Then we consider the two distributions over likelihood score L:</p>
+<div class="math">
+<p><img src="_images/math/f90c982325715b230b87afc05c6705451a1910f0.png" alt="\begin{align*}
+     D_{\text{good}}^m &amp;= \{ L_p | p \in  P_m \}\\
+     D_{\text{bad}}^m &amp;= \{ L_p | p \in P_m \cap N\}
+  \end{align*}" /></p>
+</div><p>where <img class="math" src="_images/math/d855c6a7ae519f92171373ddc597246ab1abfe77.png" alt="L_p"/> is the likelihood of point p, <img class="math" src="_images/math/49945f5f2646906d60085f52046827d417ddec25.png" alt="P_m"/> is the set of points classified into cluster m in the new classification, and N is the set of points classified as noise in the old classification.</p>
+<p>The cutoff value <img class="math" src="_images/math/d535b672b41c23a304df2702e8df7017dc1e9842.png" alt="\tilde{L}_m"/> minimizes the loss function <img class="math" src="_images/math/ce4588fd900d02afcbd260bc07f54cce49a7dc4a.png" alt="\lambda"/>, defined as</p>
+<div class="math">
+<p><img src="_images/math/4a6474c7aa2a4c1d90fd6969cc0998b54bf80491.png" alt="\lambda(\tilde{L}^m) = \| D_{\text{good}}^m \cap [-\infty, \tilde{L}^m] \| +  \| D_{\text{bad}} \cap  [\tilde{L}^m,+\infty]\|" /></p>
+</div><p>If likelihood <img class="math" src="_images/math/d855c6a7ae519f92171373ddc597246ab1abfe77.png" alt="L_p"/> is below the cutoff <img class="math" src="_images/math/d535b672b41c23a304df2702e8df7017dc1e9842.png" alt="\tilde{L}_m"/>, then point p is classified as noise, rather than in the most likely cluster m,</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">Clustering</a><ul>
+<li><a class="reference external" href="#cluster-subsets-and-merge-procedure">Cluster-subsets-and-merge procedure</a></li>
+<li><a class="reference external" href="#generalize-classifying-new-data">Generalize: classifying new data</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="detect_extract.html"
+                                  title="previous chapter">Detection and extraction of spikes</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="benchmarks.html"
+                                  title="next chapter">Performance validation</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/clustering.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="benchmarks.html" title="Performance validation"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="detect_extract.html" title="Detection and extraction of spikes"
+             >previous</a> |</li>
+        <li><a href="index.html">Caton v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, John Schulman.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+    </div>
+  </body>
+</html>

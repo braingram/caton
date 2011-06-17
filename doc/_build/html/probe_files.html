@@ -1,0 +1,236 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Probe files &mdash; Caton v0.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '#',
+        VERSION:     '0.1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Caton v0.1 documentation" href="index.html" />
+    <link rel="next" title="Detection and extraction of spikes" href="detect_extract.html" />
+    <link rel="prev" title="Usage" href="usage.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="detect_extract.html" title="Detection and extraction of spikes"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="usage.html" title="Usage"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Caton v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="probe-files">
+<span id="probefiles"></span><h1>Probe files<a class="headerlink" href="#probe-files" title="Permalink to this headline">¶</a></h1>
+<p>To cluster a data file, you must create a <tt class="docutils literal"><span class="pre">.probe</span></tt> file, which tells the program about the channel mapping and the probe layout.</p>
+<p>Each line of the probe file describes one recording site. The lines can have three different formats, whether the probe is zero-dimensional, one-dimensional, or two-dimensional. What follows are sample probe files. The parenthesized expressions give x and y coordinates (scale is irrelevant.)</p>
+<p>You can use the script <tt class="docutils literal"><span class="pre">plot_probe.py</span></tt> to check that the layout of the sites is correct and the adjacency graph (represented by blue lines) is reasonable.</p>
+<div class="section" id="zero-dimensional-probe">
+<h2>Zero-dimensional probe<a class="headerlink" href="#zero-dimensional-probe" title="Permalink to this headline">¶</a></h2>
+<p>Format: <tt class="docutils literal"><span class="pre">name</span>&nbsp; <span class="pre">dat-channel</span></tt></p>
+<p><tt class="docutils literal"><span class="pre">caton/probes/tetrode.probe</span></tt>:</p>
+<div class="highlight-python"><pre>t1 0
+t2 1
+t3 2
+t4 3
+</pre>
+</div>
+<div class="figure align-center">
+<img alt="_images/tetrode.png" src="_images/tetrode.png" style="width: 10cm;" />
+</div>
+</div>
+<div class="section" id="one-dimensional-probe">
+<h2>One-dimensional probe<a class="headerlink" href="#one-dimensional-probe" title="Permalink to this headline">¶</a></h2>
+<p>Format: <tt class="docutils literal"><span class="pre">name</span>&nbsp; <span class="pre">dat-channel</span>&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">(depth)</span></tt></p>
+<p><tt class="docutils literal"><span class="pre">caton/probes/mar16.probe</span></tt>:</p>
+<div class="highlight-python"><pre>a0 0 (0)
+a1 1 (1)
+a2 2 (2)
+a3 3 (3)
+a4 4 (4)
+a5 5 (5)
+a6 6 (6)
+a7 7 (7)
+a8 8 (8)
+a9 9 (9)
+a10 10 (10)
+a11 11 (11)
+a12 12 (12)
+a13 13 (13)
+a14 14 (14)
+a15 15 (15)
+</pre>
+</div>
+<div class="figure align-center">
+<img alt="_images/mar16.png" src="_images/mar16.png" style="width: 15cm;" />
+</div>
+</div>
+<div class="section" id="two-dimensional-probe">
+<h2>Two-dimensional probe<a class="headerlink" href="#two-dimensional-probe" title="Permalink to this headline">¶</a></h2>
+<p>Format: <tt class="docutils literal"><span class="pre">name</span>&nbsp; <span class="pre">dat-channel</span>&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">(x</span> <span class="pre">y)</span></tt></p>
+<p><tt class="docutils literal"><span class="pre">caton/probes/mar32.probe</span></tt></p>
+<div class="highlight-python"><pre>SP1 0 (0 0)
+SP2 1 (5 10)
+SP3 2 (-6 20)
+SP4 3 (7 30)
+SP5 4 (-8 40)
+SP6 5 (9 50)
+SP7 6 (-10 60)
+SP8 7 (11 70)
+SP9 8 (-12 80)
+SP10 9 (13 90)
+SP11 10 (-14 100)
+SP12 11 (15 110)
+SP13 12 (-16 120)
+SP14 13 (17 130)
+SP15 14 (-18 140)
+SP16 15 (19 150)
+SP17 16 (-20 160)
+SP18 17 (21 170)
+SP19 18 (-22 180)
+SP20 19 (23 190)
+SP21 20 (-24 200)
+SP22 21 (25 210)
+SP23 22 (-26 220)
+SP24 23 (27 230)
+SP25 24 (-28 240)
+SP26 25 (29 250)
+SP27 26 (-30 260)
+SP28 27 (31 270)
+SP29 28 (-32 280)
+SP30 29 (33 290)
+SP31 30 (-34 300)
+</pre>
+</div>
+<div class="figure align-center">
+<img alt="_images/mar32.png" src="_images/mar32.png" style="width: 6cm;" />
+</div>
+</div>
+<div class="section" id="advanced-probe-file-usage">
+<h2>Advanced probe file usage<a class="headerlink" href="#advanced-probe-file-usage" title="Permalink to this headline">¶</a></h2>
+<p>The probe file determines two things:
+1. The edges in the adjacency graph of the sites (blue lines in figures above)
+2. The groups of nearby sites that will be clustered together</p>
+<p>You may notice that after you run <cite>cluster_from_raw_data.py</cite> or <cite>plot_probe.py</cite> (any script that uses the probe file), the probe file will have a bunch of extra lines in it. Here is the zero-dimensional probe above&#8211;the tetrode&#8211;after this modification:</p>
+<div class="highlight-python"><pre>t1 0
+t2 1
+t3 2
+t4 3
+
+EDGES
+t1 t2
+t1 t3
+t1 t4
+t2 t3
+t2 t4
+t3 t4
+GROUPS
+t1 t2 t3 t4</pre>
+</div>
+<p>You may want to change the edges and the groups manually. Simply add or remove lines. For example, if you want to sort all of your channels separately, you can remove all of the edge lines and put the sites each in their own group.</p>
+<div class="highlight-python"><pre>t1 0
+t2 1
+t3 2
+t4 3
+
+EDGES
+GROUPS
+t1
+t2
+t3
+t4</pre>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">Probe files</a><ul>
+<li><a class="reference external" href="#zero-dimensional-probe">Zero-dimensional probe</a></li>
+<li><a class="reference external" href="#one-dimensional-probe">One-dimensional probe</a></li>
+<li><a class="reference external" href="#two-dimensional-probe">Two-dimensional probe</a></li>
+<li><a class="reference external" href="#advanced-probe-file-usage">Advanced probe file usage</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="usage.html"
+                                  title="previous chapter">Usage</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="detect_extract.html"
+                                  title="next chapter">Detection and extraction of spikes</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/probe_files.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="detect_extract.html" title="Detection and extraction of spikes"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="usage.html" title="Usage"
+             >previous</a> |</li>
+        <li><a href="index.html">Caton v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, John Schulman.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+    </div>
+  </body>
+</html>

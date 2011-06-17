@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Other included scripts &mdash; Caton v0.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '#',
+        VERSION:     '0.1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Caton v0.1 documentation" href="index.html" />
+    <link rel="next" title="Mixture-of-Gaussians EM Algorithm" href="mog.html" />
+    <link rel="prev" title="References" href="refs.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="mog.html" title="Mixture-of-Gaussians EM Algorithm"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="refs.html" title="References"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Caton v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="other-included-scripts">
+<h1>Other included scripts<a class="headerlink" href="#other-included-scripts" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="check-crosstalk-py">
+<h2>check_crosstalk.py<a class="headerlink" href="#check-crosstalk-py" title="Permalink to this headline">¶</a></h2>
+<p>This script gives an easy way of figuring out if there is crosstalk between your channels. If there is crosstalk between two faraway channels, you should remove both of them (delete those lines from the .probe file)</p>
+<p>Command-line usage:</p>
+<div class="highlight-python"><pre>Usage: check_crosstalk.py your_dat_file.dat [options]
+    check_crosstalk.py -h displays help
+
+Options:
+  -h, --help            show this help message and exit
+  -p PROBE, --probe=PROBE
+                        Specify the location of the probe file. By default,
+                        program looks for a .probe file in .dat directory
+  -o OUTPUT, --output=OUTPUT
+                        Directory where the output directory 'basename/' ends
+                        up. By default, output goes next to .dat file.
+</pre>
+</div>
+<p>This script plots a colormap of the inverse-covariance matrix of a segment of a few seconds of filtered data. Actually, it takes the above-diagonal portion of the matrix, and zeros the diagonal and the below-diagonal part. (This is because the diagonal entries are by far the largest.)</p>
+<p>The following comes from a 32-site probe with two rows of channels:</p>
+<div class="figure">
+<img alt="_images/mar32_before_crosstalk.png" src="_images/mar32_before_crosstalk.png" style="width: 15cm;" />
+</div>
+<p>One matrix element (between SP25 and SP27) dwarves all of the others. We delete these two lines from the probe file (or comment them out with <tt class="docutils literal"><span class="pre">#</span></tt>)</p>
+<div class="figure">
+<img alt="_images/mar32_after_crosstalk.png" src="_images/mar32_after_crosstalk.png" style="width: 15cm;" />
+</div>
+<p>The blue dots indicate pairs of sites that are considered spatially adjacent when the channel adjacency graph is generated (see <a class="reference external" href="detect_extract.html#adjacency"><em>Channel adjacency graph</em></a>).</p>
+</div>
+<div class="section" id="plot-probe-py">
+<h2>plot_probe.py<a class="headerlink" href="#plot-probe-py" title="Permalink to this headline">¶</a></h2>
+<p>Plots the sites of the probe and the channel adjacency graph. Used to create the probe plots throught this document.</p>
+<div class="highlight-python"><pre>Usage: plot_probe.py your_probe_file.probe
+plot_probe.py -h displays help
+
+Options:
+  -h, --help            show this help message and exit
+  -o OUTPUT, --output=OUTPUT
+                        Directory where the output directory 'basename/' ends
+                        up. By default, output goes next to .dat file.
+</pre>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">Other included scripts</a><ul>
+<li><a class="reference external" href="#check-crosstalk-py">check_crosstalk.py</a></li>
+<li><a class="reference external" href="#plot-probe-py">plot_probe.py</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="refs.html"
+                                  title="previous chapter">References</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="mog.html"
+                                  title="next chapter">Mixture-of-Gaussians EM Algorithm</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/other_scripts.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="mog.html" title="Mixture-of-Gaussians EM Algorithm"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="refs.html" title="References"
+             >previous</a> |</li>
+        <li><a href="index.html">Caton v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, John Schulman.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+    </div>
+  </body>
+</html>

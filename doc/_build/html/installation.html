@@ -1,0 +1,202 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Installation &mdash; Caton v0.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '#',
+        VERSION:     '0.1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Caton v0.1 documentation" href="index.html" />
+    <link rel="next" title="Usage" href="usage.html" />
+    <link rel="prev" title="Caton: software for spike sorting" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="usage.html" title="Usage"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Caton: software for spike sorting"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Caton v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<p>Caton should work on any <cite>*nix</cite> operating system (including Linux and Mac OS X). Caton has a number of dependencies.</p>
+<ol class="arabic simple">
+<li>Python and packages:<ul>
+<li>python 2.5+</li>
+<li>numpy</li>
+<li>scipy</li>
+<li>matplotlib</li>
+<li>cython</li>
+<li>pytables</li>
+</ul>
+</li>
+<li>KlustaKwik</li>
+</ol>
+<p>First follow the instructions on how to install the python dependencies for your particular system. Then follow the KlustaKwik installation instructions.</p>
+<p>If you have no experience installing python packages, or you don&#8217;t want to use sudo, the easiest option is to use <a class="reference external" href="http://www.sagemath.org/">sage</a> for the python dependencies. Otherwise you will have to install the packages individually. Last, follow the installation instructions for Caton itself.</p>
+<div class="section" id="python-dependencies-on-mac">
+<h2>Python dependencies on Mac<a class="headerlink" href="#python-dependencies-on-mac" title="Permalink to this headline">¶</a></h2>
+<p>All dependencies are included in the <a class="reference external" href="http://www.enthought.com/products/getepd.php">Enthought Python Distribution</a></p>
+</div>
+<div class="section" id="python-dependencies-on-debian-ubuntu-linux">
+<h2>Python dependencies on Debian/Ubuntu Linux<a class="headerlink" href="#python-dependencies-on-debian-ubuntu-linux" title="Permalink to this headline">¶</a></h2>
+<p>First install a bunch of packages:</p>
+<div class="highlight-python"><pre>sudo apt-get install python-numpy python-scipy python-matplotlib cython python-setuptools
+sudo apt-get build-dep python-tables
+sudo easy_install pyrex
+sudo easy_install tables</pre>
+</div>
+<p>If you get an error about <tt class="docutils literal"><span class="pre">utilsExtension</span></tt> try this:</p>
+<div class="highlight-python"><pre>easy_install http://www.pytables.org/download/preliminary/pytables-2.2b3/tables-2.2b3.tar.gz</pre>
+</div>
+</div>
+<div class="section" id="python-dependencies-with-sage">
+<span id="sageinst"></span><h2>Python dependencies with sage<a class="headerlink" href="#python-dependencies-with-sage" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="http://www.sagemath.org/">sage</a> is a self-contained distribution with various math/science python packages. This should work on any <cite>*nix</cite> operating system.</p>
+<p>If hdf5 is not installed on your computer, you will need to install it.
+1. Download source from <a class="reference external" href="http://www.hdfgroup.org/ftp/HDF5/current16/src">http://www.hdfgroup.org/ftp/HDF5/current16/src</a>
+2. Unpack it, compile, and install:</p>
+<div class="highlight-python"><pre>tar -xvf hdf5-1.6.10.tar.gz
+./configure
+make
+make install</pre>
+</div>
+<p>This will produce directory hdf5-1.6.10/hdf5</p>
+<ol class="arabic" start="3">
+<li><p class="first">Set an environment variable to tell pytables where hdf5 libraries are during installation:</p>
+<div class="highlight-python"><pre>export HDF5_DIR=/path/to/hdf5-1.6.10/hdf5</pre>
+</div>
+</li>
+<li><p class="first">I had to do one more thing, otherwise I got &#8220;ImportError: libhdf5.so.0: cannot open shared object file&#8221;. Put the following line in your <cite>sage</cite> script (it&#8217;s in the top-level sage directory):</p>
+<div class="highlight-python"><pre>export LD_LIBRARY_PATH=/path/to/hdf5-1.6.10/hdf5/lib</pre>
+</div>
+</li>
+</ol>
+<p><strong>Important</strong>: before you install or use caton, first enter the sage directory and type:</p>
+<div class="highlight-python"><pre>./sage -sh</pre>
+</div>
+<p>This starts a <em>subshell</em> where all environment variables (e.g. paths) are set, and programs will use sage&#8217;s python instead of your system&#8217;s default python.</p>
+<p>After starting the subshell, type:</p>
+<div class="highlight-python"><pre>easy_install pyrex
+easy_install http://www.pytables.org/download/preliminary/pytables-2.2b3/tables-2.2b3.tar.gz</pre>
+</div>
+</div>
+<div class="section" id="installing-klustakwik">
+<h2>Installing KlustaKwik<a class="headerlink" href="#installing-klustakwik" title="Permalink to this headline">¶</a></h2>
+<p>If you are on Debian/Ubuntu Linux, install the .deb file on the downloads page.</p>
+<p>Otherwise, follow these steps:</p>
+<ol class="arabic simple">
+<li>Download the archive from <a class="reference external" href="http://klustakwik.sourceforge.net">http://klustakwik.sourceforge.net</a> and unarchive it</li>
+<li>Compile it by typing <cite>make</cite></li>
+<li>Move the compiled binary to a directory on your PATH (e.g. /usr/local/bin, or /home/username/local/bin, or sage/local/bin).</li>
+</ol>
+</div>
+<div class="section" id="installing-caton">
+<h2>Installing Caton<a class="headerlink" href="#installing-caton" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">Download the most recent source tarball from the <a class="reference external" href="http://code.google.com/p/caton/downloads/">downloads</a> page and unarchive it.</p>
+</li>
+<li><p class="first">Go to the Caton directory and type:</p>
+<div class="highlight-python"><pre>sudo python setup.py install</pre>
+</div>
+</li>
+</ol>
+<p>If you used sage, omit the sudo since Caton is being installed in your sage directory.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">Installation</a><ul>
+<li><a class="reference external" href="#python-dependencies-on-mac">Python dependencies on Mac</a></li>
+<li><a class="reference external" href="#python-dependencies-on-debian-ubuntu-linux">Python dependencies on Debian/Ubuntu Linux</a></li>
+<li><a class="reference external" href="#python-dependencies-with-sage">Python dependencies with sage</a></li>
+<li><a class="reference external" href="#installing-klustakwik">Installing KlustaKwik</a></li>
+<li><a class="reference external" href="#installing-caton">Installing Caton</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="index.html"
+                                  title="previous chapter">Caton: software for spike sorting</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="usage.html"
+                                  title="next chapter">Usage</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/installation.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="usage.html" title="Usage"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Caton: software for spike sorting"
+             >previous</a> |</li>
+        <li><a href="index.html">Caton v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, John Schulman.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+    </div>
+  </body>
+</html>

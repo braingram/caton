@@ -1,0 +1,27 @@
+Urgent
+========
+
+* memory error (p & m emails)
+* sort more hc1 data to get better features
+* reorder clusters
+* add interp none option
+* profile
+* document code
+* update links and docs
+* document cluster merging procedure and diagnostics
+* test and document parameter customization
+
+Fixed but untested
+=====================
+
+
+Non-urgent
+=====================
+
+* put channel info in h5 file: channel names and dat channels
+* entering, exiting give wrong filename
+* Doc should show acg for d11221 so you know what error rate to expect for a given acg
+* test on entire hc-1
+* write a tool for line profiling a lot of funcs.
+* neuroshare
+* more info in xml
