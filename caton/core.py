@@ -18,6 +18,8 @@ from interp_stuff import interp_around_peak
 from os.path import join,abspath,dirname
 from time import sleep
 
+import scikits.audiolab as al
+
 ### Placeholders. These parameters are set in PARAMS.py
 T_BEFORE = T_AFTER = T_JOIN_CC = F_LOW = THRESH_SD = DETECT_POSITIVE = DTYPE = SEPARATE_CHANNELS_PCA = REGET_FEATURES = SORT_CLUS_BY_CHANNEL = FPC = BUTTER_ORDER = CHUNK_SIZE = CHUNK_OVERLAP = CHUNKS_FOR_THRESH = INTERP_METHOD = None
 
@@ -333,6 +335,13 @@ def extract_intra_spikes(DatFileName,IntraChannel,output_dir=None,ExtraChannels=
 ############# Spike extraction helper functions ###########    
 ###########################################################
 
+def read_data(DatFileName, start, end):
+    global N_CH
+    data = []
+    for chI in xrange(N_CH):
+        fn = os.path.splitext(DatFilename)[0] + '/../Audio Files/input_%i#01.wav' % chI
+        data.append(al.wavread(fn,end,start))
+    return np.transpose(data)
 
 def extract_spikes(DatFileName,n_ch_dat,ChannelsToUse,ChannelGraph,max_spikes=None):
     
@@ -343,15 +352,17 @@ def extract_spikes(DatFileName,n_ch_dat,ChannelsToUse,ChannelGraph,max_spikes=No
     with open(DatFileName,'r') as fd:
         # Use 5 chunks to figure out threshold
         n_samps_thresh = min(CHUNK_SIZE*CHUNKS_FOR_THRESH,n_samples)
-        DatChunk = np.fromfile(fd,dtype=DTYPE,count=n_samps_thresh*n_ch_dat).reshape(n_samps_thresh,n_ch_dat)[:,ChannelsToUse]
-        fd.seek(0)
+        #DatChunk = np.fromfile(fd,dtype=DTYPE,count=n_samps_thresh*n_ch_dat).reshape(n_samps_thresh,n_ch_dat)[:,ChannelsToUse]
+        DatChunk = read_data(DatFileName, 0, n_samps_thresh)[:,ChannelsToUse]
+        #fd.seek(0)
         FilteredChunk = filtfilt2d(b,a,DatChunk.astype(np.int32))    
         Threshold = THRESH_SD*np.median(np.abs(FilteredChunk),axis=0)/.6745    
         
         spike_count = 0
         for s_start,s_end,keep_start,keep_end in chunk_bounds(n_samples,CHUNK_SIZE,CHUNK_OVERLAP):
-            DatChunk = np.fromfile(fd,dtype=DTYPE,count=(s_end-s_start)*n_ch_dat).reshape(s_end-s_start,n_ch_dat)[:,ChannelsToUse]
-            fd.seek(fd.tell()-CHUNK_OVERLAP*n_ch_dat*np.nbytes[DTYPE])
+            # DatChunk = np.fromfile(fd,dtype=DTYPE,count=(s_end-s_start)*n_ch_dat).reshape(s_end-s_start,n_ch_dat)[:,ChannelsToUse]
+            DatChunk = read_data(DatFileName, s_start, s_end)[:,ChannelsToUse]
+            # fd.seek(fd.tell()-CHUNK_OVERLAP*n_ch_dat*np.nbytes[DTYPE])
             FilteredChunk = filtfilt2d(b,a,DatChunk.astype(np.float32))    
             BinaryChunk = (FilteredChunk < -Threshold).astype(np.int8) if DETECT_POSITIVE else np.abs(FilteredChunk < -Threshold).astype(np.int8)
             IndListsChunk = connected_components(BinaryChunk,complete_if_none(ChannelGraph,N_CH),S_JOIN_CC)              
