@@ -1,4 +1,7 @@
 from __future__ import with_statement, division
+
+import logging
+
 import itertools as it, numpy as np, scipy.signal as signal
 from scipy.stats import rv_discrete
 from scipy.stats.mstats import mquantiles
@@ -340,7 +343,7 @@ def read_data(DatFileName, start, end):
     data = []
     for chI in xrange(N_CH):
         fn = os.path.dirname(DatFileName) + '/../Audio Files/input_%i#01.wav' % (chI + 1)
-        data.append(al.wavread(fn,end,start))
+        data.append(al.wavread(fn,end,start)[0])
     return np.transpose(data)
 
 def extract_spikes(DatFileName,n_ch_dat,ChannelsToUse,ChannelGraph,max_spikes=None):
@@ -349,7 +352,9 @@ def extract_spikes(DatFileName,n_ch_dat,ChannelsToUse,ChannelGraph,max_spikes=No
     b,a = signal.butter(BUTTER_ORDER,(F_LOW/(SAMPLE_RATE/2),F_HIGH/(SAMPLE_RATE/2)),'pass')    
     ProgBar = spikes_and_samples_bar(max_spikes,n_samples)
     
-    with open(DatFileName,'r') as fd:
+    #with open(DatFileName,'r') as fd:
+    if True:
+        logging.debug("Calculating threshold")
         # Use 5 chunks to figure out threshold
         n_samps_thresh = min(CHUNK_SIZE*CHUNKS_FOR_THRESH,n_samples)
         #DatChunk = np.fromfile(fd,dtype=DTYPE,count=n_samps_thresh*n_ch_dat).reshape(n_samps_thresh,n_ch_dat)[:,ChannelsToUse]
@@ -357,6 +362,7 @@ def extract_spikes(DatFileName,n_ch_dat,ChannelsToUse,ChannelGraph,max_spikes=No
         #fd.seek(0)
         FilteredChunk = filtfilt2d(b,a,DatChunk.astype(np.float64))    
         Threshold = THRESH_SD*np.median(np.abs(FilteredChunk),axis=0)/.6745    
+        logging.debug("Found threshold: %f" % Threshold)
         
         spike_count = 0
         for s_start,s_end,keep_start,keep_end in chunk_bounds(n_samples,CHUNK_SIZE,CHUNK_OVERLAP):
@@ -414,7 +420,7 @@ def chunk_bounds(n_samples,chunk_size,overlap):
         #yield Clu,Spk,fet_c3
 
 def extract_wave_simple(IndList,FilteredArr):    
-    IndArr = np.array(IndList,dtype=np.float64)
+    IndArr = np.array(IndList,dtype=np.int32)
     SampArr = IndArr[:,0]
     ChArr = IndArr[:,1]
     
@@ -423,7 +429,7 @@ def extract_wave_simple(IndList,FilteredArr):
     return Wave,PeakSample,bincount(ChArr,N_CH).astype(np.bool8)
 
 def extract_wave_interp(IndList,FilteredArr):
-    IndArr = np.array(IndList,dtype=np.float64)
+    IndArr = np.array(IndList,dtype=np.int32)
     SampArr = IndArr[:,0]
     ChArr = IndArr[:,1]
     
