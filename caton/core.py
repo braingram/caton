@@ -339,7 +339,7 @@ def read_data(DatFileName, start, end):
     global N_CH
     data = []
     for chI in xrange(N_CH):
-        fn = os.path.splitext(DatFilename)[0] + '/../Audio Files/input_%i#01.wav' % chI
+        fn = os.path.dirname(DatFileName) + '/../Audio Files/input_%i#01.wav' % (chI + 1)
         data.append(al.wavread(fn,end,start))
     return np.transpose(data)
 
@@ -355,7 +355,7 @@ def extract_spikes(DatFileName,n_ch_dat,ChannelsToUse,ChannelGraph,max_spikes=No
         #DatChunk = np.fromfile(fd,dtype=DTYPE,count=n_samps_thresh*n_ch_dat).reshape(n_samps_thresh,n_ch_dat)[:,ChannelsToUse]
         DatChunk = read_data(DatFileName, 0, n_samps_thresh)[:,ChannelsToUse]
         #fd.seek(0)
-        FilteredChunk = filtfilt2d(b,a,DatChunk.astype(np.int32))    
+        FilteredChunk = filtfilt2d(b,a,DatChunk.astype(np.float64))    
         Threshold = THRESH_SD*np.median(np.abs(FilteredChunk),axis=0)/.6745    
         
         spike_count = 0
@@ -414,7 +414,7 @@ def chunk_bounds(n_samples,chunk_size,overlap):
         #yield Clu,Spk,fet_c3
 
 def extract_wave_simple(IndList,FilteredArr):    
-    IndArr = np.array(IndList,dtype=np.int32)
+    IndArr = np.array(IndList,dtype=np.float64)
     SampArr = IndArr[:,0]
     ChArr = IndArr[:,1]
     
@@ -423,7 +423,7 @@ def extract_wave_simple(IndList,FilteredArr):
     return Wave,PeakSample,bincount(ChArr,N_CH).astype(np.bool8)
 
 def extract_wave_interp(IndList,FilteredArr):
-    IndArr = np.array(IndList,dtype=np.int32)
+    IndArr = np.array(IndList,dtype=np.float64)
     SampArr = IndArr[:,0]
     ChArr = IndArr[:,1]
     
