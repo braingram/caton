@@ -1,3 +1,4 @@
 *.pyc
 .hg
 .hgignore
+caton/CEM_extensions.c
