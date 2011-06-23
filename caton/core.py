@@ -80,10 +80,8 @@ def classify_from_raw_data(JobType,DatFileName,ProbeFileName,max_spikes=None,out
         Channels_dat = [site.dat for site in probe_stuff.PROBE_SITES]
         if JobType == "batch":
             cluster_from_raw_data(basename,DatFileName,n_ch_dat,Channels_dat,probe_stuff.PROBE_GRAPH,max_spikes)
-        realOutDir = os.getcwd()
         #elif JobType == "generalize":
             #generalize_group_from_raw_data_splitprobe(basename,DatFileName,n_ch_dat,Channels_dat,probe_stuff.PROBE_GRAPH,max_spikes,clu_dir)                        
-    return realOutDir # return the directory where the clustering data was just written
 
 #def spike_dtype():
   #  return np.dtype([("time",np.int32),("st",np.int8,N_CH),("wave",np.float32,(S_TOTAL,N_CH)),("fet",np.float32,(N_CH,FPC)),("clu",np.int32)])            
