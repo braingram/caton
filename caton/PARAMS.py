@@ -8,7 +8,7 @@ T_JOIN_CC = .0005 # maximum time between two samples for them to be "contiguous"
 F_LOW = 500. # low pass frequency (Hz)
 THRESH_SD = 4.5 # threshold for detection. standard deviations of signal
 DETECT_POSITIVE = True # detect spikes with positive threshold crossing
-DTYPE = "float64"#"i2" # ">i2" (> means big-endian), "i4", "f2"
+DTYPE = "i2" # ">i2" (> means big-endian), "i4", "f2"
 # see http://docs.scipy.org/doc/numpy/reference/arrays.dtypes.html#arrays-dtypes-constructing
 SEPARATE_CHANNELS_PCA = True # Extract features on channels separately. 
 #If False, then I lump all channels together and do PCA, and use that for feature extraction

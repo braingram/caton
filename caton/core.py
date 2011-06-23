@@ -1,7 +1,4 @@
 from __future__ import with_statement, division
-
-import logging
-
 import itertools as it, numpy as np, scipy.signal as signal
 from scipy.stats import rv_discrete
 from scipy.stats.mstats import mquantiles
@@ -20,8 +17,6 @@ from progressbar import ProgressBar,SimpleProgress,Bar,Percentage
 from interp_stuff import interp_around_peak
 from os.path import join,abspath,dirname
 from time import sleep
-
-import scikits.audiolab as al
 
 ### Placeholders. These parameters are set in PARAMS.py
 T_BEFORE = T_AFTER = T_JOIN_CC = F_LOW = THRESH_SD = DETECT_POSITIVE = DTYPE = SEPARATE_CHANNELS_PCA = REGET_FEATURES = SORT_CLUS_BY_CHANNEL = FPC = BUTTER_ORDER = CHUNK_SIZE = CHUNK_OVERLAP = CHUNKS_FOR_THRESH = INTERP_METHOD = None
@@ -336,13 +331,6 @@ def extract_intra_spikes(DatFileName,IntraChannel,output_dir=None,ExtraChannels=
 ############# Spike extraction helper functions ###########    
 ###########################################################
 
-def read_data(DatFileName, start, end):
-    global N_CH
-    data = []
-    for chI in xrange(N_CH):
-        fn = os.path.dirname(DatFileName) + '/../Audio Files/input_%i#01.wav' % (chI + 1)
-        data.append(al.wavread(fn,end,start)[0])
-    return np.transpose(data)
 
 def extract_spikes(DatFileName,n_ch_dat,ChannelsToUse,ChannelGraph,max_spikes=None):
     
@@ -350,32 +338,21 @@ def extract_spikes(DatFileName,n_ch_dat,ChannelsToUse,ChannelGraph,max_spikes=No
     b,a = signal.butter(BUTTER_ORDER,(F_LOW/(SAMPLE_RATE/2),F_HIGH/(SAMPLE_RATE/2)),'pass')    
     ProgBar = spikes_and_samples_bar(max_spikes,n_samples)
     
-    #with open(DatFileName,'r') as fd:
-    if True:
-        logging.debug("Calculating threshold")
+    with open(DatFileName,'r') as fd:
         # Use 5 chunks to figure out threshold
         n_samps_thresh = min(CHUNK_SIZE*CHUNKS_FOR_THRESH,n_samples)
-        #DatChunk = np.fromfile(fd,dtype=DTYPE,count=n_samps_thresh*n_ch_dat).reshape(n_samps_thresh,n_ch_dat)[:,ChannelsToUse]
-        DatChunk = read_data(DatFileName, 0, n_samps_thresh)[:,ChannelsToUse]
-        #fd.seek(0)
-        FilteredChunk = filtfilt2d(b,a,DatChunk.astype(np.float64))    
+        DatChunk = np.fromfile(fd,dtype=DTYPE,count=n_samps_thresh*n_ch_dat).reshape(n_samps_thresh,n_ch_dat)[:,ChannelsToUse]
+        fd.seek(0)
+        FilteredChunk = filtfilt2d(b,a,DatChunk.astype(np.int32))    
         Threshold = THRESH_SD*np.median(np.abs(FilteredChunk),axis=0)/.6745    
-        #logging.debug("Found threshold: %f" % Threshold)
         
         spike_count = 0
         for s_start,s_end,keep_start,keep_end in chunk_bounds(n_samples,CHUNK_SIZE,CHUNK_OVERLAP):
-            logging.debug("Processing first chunk")
-            # DatChunk = np.fromfile(fd,dtype=DTYPE,count=(s_end-s_start)*n_ch_dat).reshape(s_end-s_start,n_ch_dat)[:,ChannelsToUse]
-            logging.debug("Reading chunk")
-            DatChunk = read_data(DatFileName, s_start, s_end)[:,ChannelsToUse]
-            # fd.seek(fd.tell()-CHUNK_OVERLAP*n_ch_dat*np.nbytes[DTYPE])
-            logging.debug("Filtering chunk")
-            FilteredChunk = filtfilt2d(b,a,DatChunk.astype(np.float64))
-            logging.debug("Thresholding chunk")
+            DatChunk = np.fromfile(fd,dtype=DTYPE,count=(s_end-s_start)*n_ch_dat).reshape(s_end-s_start,n_ch_dat)[:,ChannelsToUse]
+            fd.seek(fd.tell()-CHUNK_OVERLAP*n_ch_dat*np.nbytes[DTYPE])
+            FilteredChunk = filtfilt2d(b,a,DatChunk.astype(np.float32))    
             BinaryChunk = (FilteredChunk < -Threshold).astype(np.int8) if DETECT_POSITIVE else np.abs(FilteredChunk < -Threshold).astype(np.int8)
-            logging.deubg("Finding connected components")
             IndListsChunk = connected_components(BinaryChunk,complete_if_none(ChannelGraph,N_CH),S_JOIN_CC)              
-            logging.debug("Extracting spikes")
             for IndList in IndListsChunk:
                 wave,s_peak,st = extract_wave(IndList,FilteredChunk)
                 if inrange(s_start+s_peak,keep_start,keep_end):
