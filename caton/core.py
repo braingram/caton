@@ -58,7 +58,7 @@ def print_params():
 ######## High-level scripts ########
 ####################################
 
-def classify_from_raw_data(JobType,DatFileName,ProbeFileName,max_spikes=None,output_dir=None,clu_dir=None):
+def classify_from_raw_data(clusterdir,JobType,DatFileName,ProbeFileName,max_spikes=None,output_dir=None,clu_dir=None):
     """Top level function that starts a data processing job. JobType is "batch" or "generalize". """
     print_params()
 
@@ -79,7 +79,7 @@ def classify_from_raw_data(JobType,DatFileName,ProbeFileName,max_spikes=None,out
     with indir(OutDir):    
         Channels_dat = [site.dat for site in probe_stuff.PROBE_SITES]
         if JobType == "batch":
-            cluster_from_raw_data(basename,DatFileName,n_ch_dat,Channels_dat,probe_stuff.PROBE_GRAPH,max_spikes)
+            cluster_from_raw_data(clusterdir,basename,DatFileName,n_ch_dat,Channels_dat,probe_stuff.PROBE_GRAPH,max_spikes)
         realOutDir = os.getcwd()
         #elif JobType == "generalize":
             #generalize_group_from_raw_data_splitprobe(basename,DatFileName,n_ch_dat,Channels_dat,probe_stuff.PROBE_GRAPH,max_spikes,clu_dir)                        
@@ -104,7 +104,7 @@ def make_table(filename,tablename):
     
     
             
-def cluster_from_raw_data(basename,DatFileName,n_ch_dat,Channels_dat,ChannelGraph,max_spikes):
+def cluster_from_raw_data(clusterdir,basename,DatFileName,n_ch_dat,Channels_dat,ChannelGraph,max_spikes):
     """Filter, detect, extract, and cluster on raw data."""
     ### Detect spikes. For each detected spike, send it to spike writer, which writes it to a spk file.
     ### List of times is small (memorywise) so we just store the list and write it later.
@@ -137,7 +137,7 @@ def cluster_from_raw_data(basename,DatFileName,n_ch_dat,Channels_dat,ChannelGrap
         spike_table.cols.fet[:] = [project_features_allch(wave) for wave in spike_table.cols.wave]        
                     
     ### And use batch clustering procedure (EM) to get clusters.
-    CluArr = cluster_withsubsets(spike_table,SORT_CLUS_BY_CHANNEL)
+    CluArr = cluster_withsubsets(spike_table,clusterdir,SORT_CLUS_BY_CHANNEL)
     spike_table.cols.clu[:] = CluArr
     TmArr = spike_table.cols.time[:]
 

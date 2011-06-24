@@ -24,7 +24,7 @@ def clu_mag(Mean_mf):
     return (Mean_mf**2).sum(axis=1)
 
 
-def cluster_withsubsets(spike_table,reorder_clus=True):
+def cluster_withsubsets(spike_table,clusterdir,reorder_clus=True):
     "TODO: write docstring"
     
     if reorder_clus: print "Cluster reordering not implemented!"
@@ -40,7 +40,7 @@ def cluster_withsubsets(spike_table,reorder_clus=True):
     for i_subset,ChHere,SpkHere in zip(it.count(),ChSubsets,SpkSubsets):        
         print("Sorting channels %s"%ChHere.__repr__())
         FetHere_nc3 = Fet_nc3[np.ix_(SpkHere,ChHere)] # features of spikes in this subset
-        CluArr = klustakwik_cluster(FetHere_nc3)
+        CluArr = klustakwik_cluster(FetHere_nc3,'/'.join((clusterdir,"cluster_%i" % i_subset)))
         CluMembersList = [(SpkHere[inds]) for inds in subset_inds(CluArr)] #go back to original indices
         # We are ignoring cluster 0 here, because of [1:] above. No not now
         for (i_clu,Members) in enumerate(CluMembersList):
@@ -109,11 +109,12 @@ def cluster_withsubsets(spike_table,reorder_clus=True):
     #return Old2New[Clu_n]
 
 @time_fun
-def klustakwik_cluster(Fet_nc3):
+def klustakwik_cluster(Fet_nc3, clusterdir):
     kk_path = "KlustaKwik"
-    tempdir = tempfile.mkdtemp()
-    kk_input_filepath = join(tempdir,'k_input.fet.1')
-    kk_output_filepath = join(tempdir,'k_input.clu.1')
+    if not (os.path.exists(clusterdir)):
+        os.makedirs(clusterdir)
+    kk_input_filepath = join(clusterdir,'k_input.fet.1')
+    kk_output_filepath = join(clusterdir,'k_input.clu.1')
     Fet_nf = Fet_nc3.reshape(len(Fet_nc3),-1)
     write_fet(Fet_nf,kk_input_filepath)
     n_fet = Fet_nf.shape[1]
