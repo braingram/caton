@@ -250,12 +250,13 @@ def mkdir_and_enter(DirName):
         os.mkdir(DirName)
         os.chdir(DirName)
     else:
-        is_repeat = re.match("(.+_)(\d+)$",DirName)
-        if is_repeat:
-            DirName = is_repeat.group(1)+str(int(is_repeat.group(2))+1)
-        else:
-            DirName = DirName+"_1"
-        DirName = mkdir_and_enter(DirName)
+        os.chdir(DirName)
+        # is_repeat = re.match("(.+_)(\d+)$",DirName)
+        # if is_repeat:
+        #     DirName = is_repeat.group(1)+str(int(is_repeat.group(2))+1)
+        # else:
+        #     DirName = DirName+"_1"
+        # DirName = mkdir_and_enter(DirName)
     return DirName
 
 def mkdir_maybe_rm(DirName):
