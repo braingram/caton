@@ -40,7 +40,7 @@ def set_globals_samples(sample_rate):
     global S_BEFORE, S_AFTER, S_TOTAL, S_JOIN_CC
 
     SAMPLE_RATE = sample_rate
-    F_HIGH = .95*SAMPLE_RATE/2
+    # F_HIGH = .95*SAMPLE_RATE/2
     S_BEFORE = int(T_BEFORE*SAMPLE_RATE)
     S_AFTER = int(T_AFTER*SAMPLE_RATE)
     S_TOTAL = S_BEFORE + S_AFTER

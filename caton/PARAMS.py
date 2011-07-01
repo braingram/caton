@@ -6,6 +6,7 @@ T_BEFORE = .0005 # time before peak in extracted spike
 T_AFTER = .0005 # time after peak in extracted spike
 T_JOIN_CC = .0005 # maximum time between two samples for them to be "contiguous" in detection step
 F_LOW = 500. # low pass frequency (Hz)
+F_HIGH = 5000.
 THRESH_SD = 4.5 # threshold for detection. standard deviations of signal
 DETECT_POSITIVE = True # detect spikes with positive threshold crossing
 DTYPE = "i2" # ">i2" (> means big-endian), "i4", "f2"
