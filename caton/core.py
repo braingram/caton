@@ -19,12 +19,12 @@ from os.path import join,abspath,dirname
 from time import sleep
 
 ### Placeholders. These parameters are set in PARAMS.py
-T_BEFORE = T_AFTER = T_JOIN_CC = F_LOW = THRESH_SD = DETECT_POSITIVE = DTYPE = SEPARATE_CHANNELS_PCA = REGET_FEATURES = SORT_CLUS_BY_CHANNEL = FPC = BUTTER_ORDER = CHUNK_SIZE = CHUNK_OVERLAP = CHUNKS_FOR_THRESH = INTERP_METHOD = None
+T_BEFORE = T_AFTER = T_JOIN_CC = F_LOW = THRESH_SD = DETECT_POSITIVE = DTYPE = SEPARATE_CHANNELS_PCA = REGET_FEATURES = SORT_CLUS_BY_CHANNEL = FPC = BUTTER_ORDER = CHUNK_SIZE = CHUNK_OVERLAP = CHUNKS_FOR_THRESH = INTERP_METHOD = F_HIGH = None
 
 execfile(join(dirname(abspath(__file__)),"PARAMS.py"))
 
 ### These parameters will be set by set_globals_samples
-SAMPLE_RATE = F_HIGH = None # sample rate (Hz), top of passband (Hz)
+SAMPLE_RATE = None # sample rate (Hz), top of passband (Hz)
 S_BEFORE = S_AFTER = S_TOTAL = S_JOIN_CC = None
 
 PC_3s = None # feature vectors. set by load_features(). not necessarily 3 despite name.
